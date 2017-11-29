@@ -38,7 +38,8 @@ check_args_sleep_periods <- function(agdb, algorithm) {
 }
 check_args_nonwear_periods <- function(agdb, algorithm,
                                        use_magnitude) {
-  check_epochlen_is_60(agdb, algorithm)
+  if (attr(agdb, "epochlength") != 60)
+    cat("Warning: epochlength is not 60")
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, "axis1")
   if (use_magnitude) {
@@ -59,4 +60,30 @@ check_args_collapse_method <- function(agdb, epoch_len_out) {
          "of input epoch length.")
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, "axis1")
+}
+
+check_args_cutpoints <- function(agdb, cutpoints, use_magnitude,
+                                 custom_cutpoints, cutpoints_list) {
+  if (!tolower(cutpoints) %in% cutpoints_list)
+    stop("`cutpoints` must be one of: ", paste(cutpoints_list, collapse = ", "))
+
+  if (tolower(cutpoints) == "custom") {
+    if (length(custom_cutpoints) != 2)
+      stop("If `cutpoints` is custom, then a list needs ",
+        "to be specified in format: list(c(0, 99, 100, 1952), c(\"sedentary\", \"light\"))")
+
+    if (length(custom_cutpoints[[1]])%%2)
+      stop("Your `custom_cutpoints` need to have an even number ",
+           "of categories")
+  }
+
+  check_has_variable(agdb, "axis1")
+  if (use_magnitude) {
+    check_has_variable(agdb, "axis2")
+    check_has_variable(agdb, "axis3")
+  }
+}
+
+check_args_summary <- function(agdb, vars) {
+  for (var in vars) check_has_variable(agdb, var)
 }

@@ -73,3 +73,64 @@ plot_activity_period <- function(agdb, periods, act_var,
               inherit.aes = FALSE,
               fill = fill, alpha = 0.2)
 }
+
+#' Plot activity summaries
+#'
+#' Plot a grouped timeseries of activity values. The plot is organised (faceted) by date and coloured based on cutpoint categories.
+#' @param agdb_summary A \code{tibble} (\code{tbl}) of activity data obtained from  \code{\link{summarise_agd}}.
+#' @param start_date The first day of data to plot. Default is \code{NULL} (plots all data).
+#' @param end_date The last day of data to plot. efault is \code{NULL} (plots all data).
+#' @param colours Colours are chosen by default, but a vector of custom colours can be passed in. The vector length should be equal to cutpoint categories + 1 (for non-wear time).
+#' @examples
+#' agdb_summary <- read_agd(file = "test.agd") %>%
+#'   apply_weartime() %>%
+#'   apply_cutpoints("evenson_children") %>%
+#'   summarise_agd(time = "1 hour")
+#'
+#' plot_activity_summary(agdb)
+#'
+#' # Plot selected days only
+#' plot_activity_summary(agdb, start_date = '2015-03-18',
+#'                             end_date = '2015-03-24')
+#'
+#' # Plot with custom colours
+#' plot_activity_summary(agdb, colours = c(2:6))
+#' @export
+plot_activity_summary <- function(agdb_summary,
+                                  start_date = NULL,
+                                  end_date = NULL,
+                                  colours = NULL) {
+
+  cols <- c("non_wear", rev(tolower(attr(agdb_summary, "intensity_categories"))))
+
+  data <- agdb_summary %>%
+    select(c("timestamp", cols)) %>%
+    gather(activity, minutes, -timestamp) %>%
+    arrange(timestamp) %>%
+    mutate(date = as.Date.factor(timestamp)) %>%
+    mutate(date = paste(date, "\n", weekdays(date)),
+           time = strftime(timestamp, format = "%H:%M:%S"),
+           activity = factor(activity, levels = cols, labels = cols))
+
+  if (!is.null(start_date) & !is.null(end_date)) {
+    start_date <- as.Date(start_date)
+    end_date <- as.Date(end_date)
+    data <- data %>% filter((date >= start_date) & (date <= end_date))
+  }
+
+  if (is.null(colours))
+    colours <- c("cornsilk2", "firebrick2", "orange", "lightgoldenrod2",
+                 "royalblue1", 'lightblue', "skyblue", 2:length(cols))
+
+  ggplot(data, aes(x = time, y = minutes, fill = activity)) +
+    geom_col() +
+    facet_grid(date~., switch = "both") +
+    labs(title = paste("Name: ", attr(agdb_summary, "subjectname")),
+         x = "", y = "", fill = "") +
+    theme(axis.text.x = element_text(angle = 90),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      strip.text.y = element_text(face = "bold.italic"),
+      legend.position = "right") +
+    scale_fill_manual(values = colours[1:length(cols)])
+}
