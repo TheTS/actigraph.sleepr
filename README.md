@@ -1,6 +1,6 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/dipetkov/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/dipetkov/actigraph.sleepr) [![Travis-CI Build Status](https://travis-ci.org/dipetkov/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/dipetkov/actigraph.sleepr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr)
 
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--08-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/dipetkov/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/dipetkov/actigraph.sleepr)
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--11--30-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/dipetkov/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/dipetkov/actigraph.sleepr)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ### actigraph.sleepr: Sleep and non-wear detection from ActiGraph data
@@ -20,6 +20,16 @@ An AGD file is an SQLite database file exported by an ActiGraph device. See the 
 
 ``` r
 library("actigraph.sleepr")
+#> Loading required package: dplyr
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+#> Loading required package: tidyr
 file_10s <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
                         package = "actigraph.sleepr")
 agdb_10s <- read_agd(file_10s)
@@ -85,16 +95,16 @@ agdb_10s %>%
 #> # A tibble: 8,999 x 5
 #>              timestamp axis1 axis2 axis3 magnitude
 #>                 <dttm> <int> <int> <int>     <dbl>
-#>  1 2012-06-27 10:54:00   377   397   413     685.8
-#>  2 2012-06-27 10:54:10   465   816  1225    1543.6
-#>  3 2012-06-27 10:54:20   505   444   713     980.1
-#>  4 2012-06-27 10:54:30    73    91   106     157.6
-#>  5 2012-06-27 10:54:40    45    43   115     130.8
-#>  6 2012-06-27 10:54:50     0     0     0       0.0
-#>  7 2012-06-27 10:55:00     0     0     0       0.0
-#>  8 2012-06-27 10:55:10   207   218   270     404.1
-#>  9 2012-06-27 10:55:20     0     0     0       0.0
-#> 10 2012-06-27 10:55:30     0     0     0       0.0
+#>  1 2012-06-27 10:54:00   377   397   413  685.7893
+#>  2 2012-06-27 10:54:10   465   816  1225 1543.6016
+#>  3 2012-06-27 10:54:20   505   444   713  980.0663
+#>  4 2012-06-27 10:54:30    73    91   106  157.6261
+#>  5 2012-06-27 10:54:40    45    43   115  130.7631
+#>  6 2012-06-27 10:54:50     0     0     0    0.0000
+#>  7 2012-06-27 10:55:00     0     0     0    0.0000
+#>  8 2012-06-27 10:55:10   207   218   270  404.0705
+#>  9 2012-06-27 10:55:20     0     0     0    0.0000
+#> 10 2012-06-27 10:55:30     0     0     0    0.0000
 #> # ... with 8,989 more rows
 ```
 
@@ -146,7 +156,7 @@ agdb_60s %>% apply_sadeh()
 
 ### Sleep scoring with the Cole-Kripke algorithm
 
-The Cole-Kripke algorithm is primarily used for adult populations as the supporting research was performed on subjects ranging from 35 to 65 years of age. Like the Sadeh algorithm, it requires 60s epochs and uses a 7-minute window that includes the four previous and two future epochs. The `apply_cole` function implements the algorithm as described in the ActiGraph user manual.
+The Cole-Kripke algorithm is primarily used for adult populations as the supporting research was performed on subjects ranging from 35 to 65 years of age. Like the Sadeh algorithm, it requires 60s epochs and uses a 7-minute window that includes the four previous and two future epochs. The `apply_cole_kripke` function implements the algorithm as described in the ActiGraph user manual.
 
 ``` r
 agdb_60s %>% apply_cole_kripke()
@@ -185,7 +195,7 @@ agdb_60s %>% apply_sadeh() %>% apply_tudor_locke()
 
 ### Non-wear period detection with the Troiano and Choi algorithms
 
-Long stretches that consist almost entirely of zero counts (zero epochs) suggest that the device wasn't worn at all and therefore should be excluded from downstream analysis. The Troiano algorithm for detecting periods of non-wear formalizes a technique used to analyze the 2003-2004 NHANES data, which allows a non-wear period to contain a few nonzero epochs of artifactual movement (spikes). The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by a fixed number of consecutive zero epochs.
+Long stretches that consist almost entirely of zero counts (zero epochs) suggest that the device wasn't worn at all and therefore should be excluded from downstream analysis. The Troiano algorithm for detecting periods of non-wear formalizes a technique used to analyze the 2003-2004 NHANES data, which allows a non-wear period to contain a few nonzero epochs of artifactual movement (spikes). The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by a fixed number of consecutive zero epochs. These function return a table non-wear start and end periods.
 
 ``` r
 agdb_60s %>% apply_troiano()
@@ -201,6 +211,85 @@ agdb_60s %>% apply_choi()
 #> *       <dttm>              <dttm>  <int>
 #> 1   2012-06-28 2012-06-28 02:37:00    157
 ```
+
+Alternatively, you classify non-wear time at the epoch level using `apply_weartime`. This function returns the input data with an additional wear column.
+
+``` r
+agdb_60s %>% apply_weartime(fun = apply_choi)
+#> # A tibble: 1,500 x 5
+#>              timestamp axis1 axis2 axis3  wear
+#>                 <dttm> <int> <int> <int> <int>
+#>  1 2012-06-27 10:54:00  1465  1791  2572     1
+#>  2 2012-06-27 10:55:00   207   218   270     1
+#>  3 2012-06-27 10:56:00   169   257   270     1
+#>  4 2012-06-27 10:57:00     0     0     0     1
+#>  5 2012-06-27 10:58:00   157   174   248     1
+#>  6 2012-06-27 10:59:00    23    23   279     1
+#>  7 2012-06-27 11:00:00     0     0     0     1
+#>  8 2012-06-27 11:01:00     0     0     0     1
+#>  9 2012-06-27 11:02:00     0     0     0     1
+#> 10 2012-06-27 11:03:00     0     0     0     1
+#> # ... with 1,490 more rows
+```
+
+### Activity scoring with cutpoints
+
+Each epoch can be scored with an activity intensity using a set of count-based cutpoints. There are several popular sets of cutpoints to choose from, or you can make your own. The `apply_cutpoints` function returns the input data with an extra column representing activity category.
+
+``` r
+agdb_10s %>% apply_cutpoints("evenson_children")
+#> # A tibble: 8,999 x 5
+#>              timestamp axis1 axis2 axis3 activity
+#>  *              <dttm> <int> <int> <int>    <int>
+#>  1 2012-06-27 10:54:00   377   397   413        2
+#>  2 2012-06-27 10:54:10   465   816  1225        3
+#>  3 2012-06-27 10:54:20   505   444   713        3
+#>  4 2012-06-27 10:54:30    73    91   106        2
+#>  5 2012-06-27 10:54:40    45    43   115        2
+#>  6 2012-06-27 10:54:50     0     0     0        1
+#>  7 2012-06-27 10:55:00     0     0     0        1
+#>  8 2012-06-27 10:55:10   207   218   270        2
+#>  9 2012-06-27 10:55:20     0     0     0        1
+#> 10 2012-06-27 10:55:30     0     0     0        1
+#> # ... with 8,989 more rows
+```
+
+### Summarising activity data
+
+A summary of activity data for specified time intervals (such as 30 minute, 3 hour, or 1 day blocks) can be created.
+
+``` r
+summary <- agdb_10s %>% 
+  apply_weartime() %>% 
+  apply_cutpoints("evenson_children") %>% 
+  summarise_agd(time = "1 hour")
+
+summary
+#> # A tibble: 26 x 6
+#>              timestamp non_wear sedentary light moderate vigorous
+#>                 <dttm>    <dbl>     <dbl> <dbl>    <dbl>    <dbl>
+#>  1 2012-06-27 10:00:00        0      4.33  1.33     0.33     0.00
+#>  2 2012-06-27 11:00:00        0     53.17  4.50     0.50     1.83
+#>  3 2012-06-27 12:00:00        0     55.67  3.67     0.00     0.67
+#>  4 2012-06-27 13:00:00        0     47.17  8.83     1.17     2.83
+#>  5 2012-06-27 14:00:00        0     45.50 12.17     0.17     2.17
+#>  6 2012-06-27 15:00:00        0     46.00 12.00     0.50     1.50
+#>  7 2012-06-27 16:00:00        0     46.83  6.17     1.83     5.17
+#>  8 2012-06-27 17:00:00        0     37.17 10.17     3.50     9.17
+#>  9 2012-06-27 18:00:00        0     46.17  9.67     1.00     3.17
+#> 10 2012-06-27 19:00:00        0     53.50  4.83     0.50     1.17
+#> # ... with 16 more rows
+```
+
+### Plotting summary data
+
+Summary data can be visualised in a day-level plot
+
+``` r
+plot_activity_summary(summary)
+```
+
+![](README-unnamed-chunk-14-1.png)
 
 ### References
 

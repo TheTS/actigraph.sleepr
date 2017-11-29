@@ -79,7 +79,7 @@ agdb_60s %>% apply_sadeh()
 
 ### Sleep scoring with the Cole-Kripke algorithm
 
-The Cole-Kripke algorithm is primarily used for adult populations as the supporting research was performed on subjects ranging from 35 to 65 years of age. Like the Sadeh algorithm, it requires 60s epochs and uses a 7-minute window that includes the four previous and two future epochs. The `apply_cole` function implements the algorithm as described in the ActiGraph user manual.
+The Cole-Kripke algorithm is primarily used for adult populations as the supporting research was performed on subjects ranging from 35 to 65 years of age. Like the Sadeh algorithm, it requires 60s epochs and uses a 7-minute window that includes the four previous and two future epochs. The `apply_cole_kripke` function implements the algorithm as described in the ActiGraph user manual.
 
 ```{r }
 agdb_60s %>% apply_cole_kripke()
@@ -95,11 +95,46 @@ agdb_60s %>% apply_sadeh() %>% apply_tudor_locke()
 
 ### Non-wear period detection with the Troiano and Choi algorithms
 
-Long stretches that consist almost entirely of zero counts (zero epochs) suggest that the device wasn't worn at all and therefore should be excluded from downstream analysis. The Troiano algorithm for detecting periods of non-wear formalizes a technique used to analyze the 2003-2004 NHANES data, which allows a non-wear period to contain a few nonzero epochs of artifactual movement (spikes). The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by a fixed number of consecutive zero epochs.
+Long stretches that consist almost entirely of zero counts (zero epochs) suggest that the device wasn't worn at all and therefore should be excluded from downstream analysis. The Troiano algorithm for detecting periods of non-wear formalizes a technique used to analyze the 2003-2004 NHANES data, which allows a non-wear period to contain a few nonzero epochs of artifactual movement (spikes). The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by a fixed number of consecutive zero epochs. These function return a table non-wear start and end periods.
 
 ```{r }
 agdb_60s %>% apply_troiano()
 agdb_60s %>% apply_choi()
+```
+
+Alternatively, you classify non-wear time at the epoch level using `apply_weartime`. This function returns the input data with an additional wear column.
+
+```{r }
+agdb_60s %>% apply_weartime(fun = apply_choi)
+```
+
+### Activity scoring with cutpoints
+
+Each epoch can be scored with an activity intensity using a set of count-based cutpoints. There are several popular sets of cutpoints to choose from, or you can make your own. The `apply_cutpoints` function returns the input data with an extra column representing activity category.
+
+```{r }
+agdb_10s %>% apply_cutpoints("evenson_children")
+```
+
+### Summarising activity data
+
+A summary of activity data for specified time intervals (such as 30 minute, 3 hour, or 1 day blocks) can be created.   
+
+```{r }
+summary <- agdb_10s %>% 
+  apply_weartime() %>% 
+  apply_cutpoints("evenson_children") %>% 
+  summarise_agd(time = "1 hour")
+
+summary
+```
+
+### Plotting summary data
+
+Summary data can be visualised in a day-level plot 
+
+```{r }
+plot_activity_summary(summary)
 ```
 
 ### References
