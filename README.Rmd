@@ -5,7 +5,7 @@ output:
 bibliography: actigraph.bib
 ---
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TheTS/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/TheTS/actigraph.sleepr)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TheTS/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/TheTS/actigraph-sleepr)
 [![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraph.sleepr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr)
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/)
