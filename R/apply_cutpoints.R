@@ -21,16 +21,18 @@
 #' @references Mattocks, C., et al. (2007). Calibration of an accelerometer during free‐living activities in children. \emph{Pediatric Obesity} 2(4): 218-226.
 #' @references Puyau, M. R., et al. (2002). Validation and calibration of physical activity monitors in children. \emph{Obesity} 10(3): 150-157.
 #' @examples
+#' data("gtxplus1day")
+#'
 #' # Predefined cutpoints
-#' agd <- read_agd(file = "test.agd") %>%
-#'   apply_cutpoints(cutpoints = "evenson_child")
+#' agd <- gtxplus1day %>%
+#'   apply_cutpoints("evenson_children")
 #'
 #' # Custom cutpoints
 #' my_cutpoints <- list(c(0, 100, 101, 1499, 1500, 3999, 4000, Inf),
-#'                      c("sedentary", "light", "moderate", "vigorous")))
+#'                      c("sedentary", "light", "moderate", "vigorous"))
 #'
-#' agd <- read_agd(file = "test.agd") %>%
-#'   apply_cutpoints(cutpoints = "custom",
+#' agd <- gtxplus1day %>%
+#'   apply_cutpoints("custom",
 #'                   custom_cutpoints = my_cutpoints)
 #' @export
 apply_cutpoints <- function(agdb,
@@ -52,10 +54,10 @@ apply_cutpoints <- function(agdb,
     var <- 'axis1'
 
   if (cutpoints == "freedson_adult")
-    cp <- list(thresholds=c(0, 99, 100, 1951, 1952, 5724, 5725, Inf),
-               categories=c("sedentary", "light", "moderate", "vigorous"))
+    cp <- list(thresholds=c(0, 99, 100, 1951, 1952, 5724, 5725, 9498, 9499, Inf),
+               categories=c("sedentary", "light", "moderate", "vigorous", "very vigorous"))
   else if (cutpoints == "freedson_adult_vm")
-    cp <- list(thresholds=c(0, 2690, 2691, 6166, 6167, 9642, 9643, Inf),
+    cp <- list(thresholds=c(0, 2689, 2690, 6166, 6167, 9642, 9643, Inf),
                categories=c("sedentary", "light", "moderate", "vigorous"))
   else if (cutpoints == "freedson_children")
     cp <- list(thresholds=c(0, 149, 150, 499, 500, 3999, 4000, 7599, 7600, Inf),

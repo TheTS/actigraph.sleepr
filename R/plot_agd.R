@@ -82,19 +82,21 @@ plot_activity_period <- function(agdb, periods, act_var,
 #' @param end_date The last day of data to plot. efault is \code{NULL} (plots all data).
 #' @param colours Colours are chosen by default, but a vector of custom colours can be passed in. The vector length should be equal to cutpoint categories + 1 (for non-wear time).
 #' @examples
-#' agdb_summary <- read_agd(file = "test.agd") %>%
+#' data("gtxplus1day")
+#'
+#' agdb_summary <- gtxplus1day %>%
 #'   apply_weartime() %>%
 #'   apply_cutpoints("evenson_children") %>%
 #'   summarise_agd(time = "1 hour")
 #'
-#' plot_activity_summary(agdb)
+#' plot_activity_summary(agdb_summary)
 #'
 #' # Plot selected days only
-#' plot_activity_summary(agdb, start_date = '2015-03-18',
-#'                             end_date = '2015-03-24')
+#' plot_activity_summary(agdb_summary, start_date = '2012-06-27',
+#'                             end_date = '2012-06-28')
 #'
 #' # Plot with custom colours
-#' plot_activity_summary(agdb, colours = c(2:6))
+#' plot_activity_summary(agdb_summary, colours = c(2:6))
 #' @export
 plot_activity_summary <- function(agdb_summary,
                                   start_date = NULL,
@@ -105,24 +107,24 @@ plot_activity_summary <- function(agdb_summary,
 
   data <- agdb_summary %>%
     select(c("timestamp", cols)) %>%
-    gather(activity, minutes, -timestamp) %>%
-    arrange(timestamp) %>%
-    mutate(date = as.Date.factor(timestamp)) %>%
-    mutate(date = paste(date, "\n", weekdays(date)),
-           time = strftime(timestamp, format = "%H:%M:%S"),
-           activity = factor(activity, levels = cols, labels = cols))
+    gather("activity", "minutes", -.data$timestamp) %>%
+    arrange(.data$timestamp) %>%
+    mutate(date = as.Date.factor(.data$timestamp)) %>%
+    mutate(date = paste(.data$date, "\n", weekdays(.data$date)),
+           time = strftime(.data$timestamp, format = "%H:%M:%S"),
+           activity = factor(.data$activity, levels = cols, labels = cols))
 
   if (!is.null(start_date) & !is.null(end_date)) {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)
-    data <- data %>% filter((date >= start_date) & (date <= end_date))
+    data <- data %>% filter((.data$date >= start_date) & (.data$date <= end_date))
   }
 
   if (is.null(colours))
     colours <- c("cornsilk2", "firebrick2", "orange", "lightgoldenrod2",
                  "royalblue1", 'lightblue', "skyblue", 2:length(cols))
 
-  ggplot(data, aes(x = time, y = minutes, fill = activity)) +
+  ggplot(data, aes_string(x = "time", y = "minutes", fill = "activity")) +
     geom_col() +
     facet_grid(date~., switch = "both") +
     labs(title = paste("Name: ", attr(agdb_summary, "subjectname")),

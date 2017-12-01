@@ -6,15 +6,15 @@
 #' @details The data are scaled to minutes (e.g. minutes of light intensity activity per hour) where appropriate. If the input \code{agdb} contains incline and steps data, this will also be summarised.
 #' @return A \code{tibble} of summary activity data where rows correspond to the chosen \code{time} interval.
 #' @examples
-#'  agd <- read_agd(file = "test.agd") %>%
+#' data("gtxplus1day")
+#'
+#' agd <- gtxplus1day %>%
 #'   apply_weartime() %>%
 #'   apply_cutpoints("freedson_children") %>%
 #'   summarise_agd(time = "1 hour")
 #'
-#'  # "min", "day" etc. are also valid time options
-#'  summarise_agd(time = "30 min")
 #' @export
-summarise_agd <- function(agdb, time = '1 hour') {
+summarise_agd <- function(agdb, time = "1 hour") {
 
   check_args_summary(agdb, c("activity", "wear"))
 
@@ -31,8 +31,8 @@ summarise_agd <- function(agdb, time = '1 hour') {
   agdb %>%
     select(cols) %>%
     mutate_if(is.numeric, as.integer) %>%
-    mutate_at(vars(-matches('steps'), -timestamp), funs(./60)) %>%
-    group_by(timestamp = cut(timestamp, time)) %>%
+    mutate_at(vars(-matches('steps'), -.data$timestamp), funs(./60)) %>%
+    group_by(timestamp = cut(.data$timestamp, time)) %>%
     summarise_all(funs(sum(.))) %>%
     mutate_if(is.numeric, funs(round(., 2))) %>%
     mutate_if(is.factor, as.POSIXct)

@@ -20,12 +20,14 @@ The input \code{tibble} of activity data with an additional \emph{'wear'} column
 This function wraps either the \code{\link{apply_choi}} or \code{\link{apply_troiano}} functions to calculate weartime, and appends a \emph{'wear'} column to the input \code{tibble}.
 }
 \examples{
- agd <- read_agd(file = "test.agd") \%>\%
+ data("gtxplus1day")
+
+ agd <- gtxplus1day \%>\%
   apply_weartime() \%>\%
   apply_cutpoints("evenson_children")
 
  # With additional arguments passed to the weartime function
- agd <- read_agd(file = "test.agd") \%>\%
+ agd <- gtxplus1day \%>\%
   apply_weartime(fun = apply_troiano, min_period_len = 30) \%>\%
   apply_cutpoints("evenson_children")
 }

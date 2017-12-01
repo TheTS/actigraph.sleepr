@@ -21,11 +21,11 @@ Summarises activity data over a time period.
 The data are scaled to minutes (e.g. minutes of light intensity activity per hour) where appropriate. If the input \code{agdb} contains incline and steps data, this will also be summarised.
 }
 \examples{
- agd <- read_agd(file = "test.agd") \%>\%
+data("gtxplus1day")
+
+agd <- gtxplus1day \%>\%
   apply_weartime() \%>\%
   apply_cutpoints("freedson_children") \%>\%
   summarise_agd(time = "1 hour")
 
- # "min", "day" etc. are also valid time options
- summarise_agd(time = "30 min")
 }

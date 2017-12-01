@@ -33,16 +33,18 @@ All cutpoint values must be at the counts-per-minute (CPM) scale (60 sec epoch).
          }
 }
 \examples{
+data("gtxplus1day")
+
 # Predefined cutpoints
-agd <- read_agd(file = "test.agd") \%>\%
-  apply_cutpoints(cutpoints = "evenson_child")
+agd <- gtxplus1day \%>\%
+  apply_cutpoints("evenson_children")
 
 # Custom cutpoints
 my_cutpoints <- list(c(0, 100, 101, 1499, 1500, 3999, 4000, Inf),
-                     c("sedentary", "light", "moderate", "vigorous")))
+                     c("sedentary", "light", "moderate", "vigorous"))
 
-agd <- read_agd(file = "test.agd") \%>\%
-  apply_cutpoints(cutpoints = "custom",
+agd <- gtxplus1day \%>\%
+  apply_cutpoints("custom",
                   custom_cutpoints = my_cutpoints)
 }
 \references{

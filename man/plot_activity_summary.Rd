@@ -20,17 +20,19 @@ plot_activity_summary(agdb_summary, start_date = NULL, end_date = NULL,
 Plot a grouped timeseries of activity values. The plot is organised (faceted) by date and coloured based on cutpoint categories.
 }
 \examples{
-agdb_summary <- read_agd(file = "test.agd") \%>\%
+data("gtxplus1day")
+
+agdb_summary <- gtxplus1day \%>\%
   apply_weartime() \%>\%
   apply_cutpoints("evenson_children") \%>\%
   summarise_agd(time = "1 hour")
 
-plot_activity_summary(agdb)
+plot_activity_summary(agdb_summary)
 
 # Plot selected days only
-plot_activity_summary(agdb, start_date = '2015-03-18',
-                            end_date = '2015-03-24')
+plot_activity_summary(agdb_summary, start_date = '2012-06-27',
+                            end_date = '2012-06-28')
 
 # Plot with custom colours
-plot_activity_summary(agdb, colours = c(2:6))
+plot_activity_summary(agdb_summary, colours = c(2:6))
 }

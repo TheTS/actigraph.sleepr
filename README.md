@@ -1,6 +1,4 @@
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/dipetkov/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/dipetkov/actigraph.sleepr) [![Travis-CI Build Status](https://travis-ci.org/dipetkov/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/dipetkov/actigraph.sleepr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr)
-
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--11--30-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/dipetkov/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/dipetkov/actigraph.sleepr)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TheTS/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/TheTS/actigraph.sleepr) [![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraph.sleepr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--12--01-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/TheTS/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraph.sleepr)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ### actigraph.sleepr: Sleep and non-wear detection from ActiGraph data
@@ -290,6 +288,35 @@ plot_activity_summary(summary)
 ```
 
 ![](README-unnamed-chunk-14-1.png)
+
+### Batch process
+
+You can process all agd files in a directory with a simple for loop
+
+``` r
+library(actigraph.sleepr)
+library(ggplot2)
+
+files <- list.files(choose.dir(), pattern = '*.agd')
+
+for (file in files) {
+  
+  data <- read_agd(file) %>%
+    apply_weartime() %>%
+    apply_cutpoints("evenson_children")
+
+  # Save each data file to cav
+  write.csv(data, file = gsub('.agd', '.csv', file), row.names = FALSE)
+
+  # Save a summary plot of each data record
+  plot <- data %>%
+    summarise_agd(time = "1 hour") %>%
+    plot_activity_summary()
+
+  ggsave(filename = gsub('.agd', '.png', file), plot = plot, 
+         width = 26, height = 21, units = 'cm')
+}
+```
 
 ### References
 
