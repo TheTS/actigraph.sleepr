@@ -17,7 +17,7 @@ bibliography: actigraph.bib
 
 ### actigraph.sleepr: Sleep and non-wear detection from ActiGraph data
 
-```{r , echo = FALSE}
+```{r, echo = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, 
                       comment = "#>",
                       fig.path = "README-")
@@ -27,7 +27,7 @@ The `actigraph.sleepr` package implements three sleep scoring/detection algorith
 
 ### Installation
 
-```{r , eval = FALSE}
+```{r, eval = FALSE}
 library("devtools")
 install_github("dipetkov/actigraph.sleepr")
 ```
@@ -36,7 +36,7 @@ install_github("dipetkov/actigraph.sleepr")
 
 An AGD file is an SQLite database file exported by an ActiGraph device. See the [ActiLife 6 User manual](http://actigraphcorp.com/support/manuals/actilife-6-manual/). For illustration let's use GT3X+ sample data taken from ActiGraph's [online documentation](https://actigraph.desk.com).
 
-```{r }
+```{r}
 library("actigraph.sleepr")
 file_10s <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
                         package = "actigraph.sleepr")
@@ -45,13 +45,13 @@ agdb_10s <- read_agd(file_10s)
 
 The `read_agd` function loads the raw activity measurements into a convenient format: a tibble (data frame) of timestamped activity counts, whose attributes are the device settings.
 
-```{r }
+```{r}
 str(agdb_10s)
 ```
 
 Since the data is stored in a tibble, we can use the dplyr verbs (mutate, select, filter, summarise, group_by, arrange) to manipulate the data. For example, let's compute the magnitude of the three-axis counts (axis1 - vertical, axis2 - horizontal, axis3 - lateral).
 
-```{r }
+```{r}
 suppressMessages(library("dplyr"))
 agdb_10s <- agdb_10s %>% select(timestamp, starts_with("axis"))
 agdb_10s %>%
@@ -62,7 +62,7 @@ agdb_10s %>%
 
 The Sadeh and Cole-Kripke algorithms for converting activity measurements into asleep/awake indicators were developed for 60s epochs. If the data is in smaller epochs, we need to collapse or aggregate the epochs. The example data is in 10s epochs. So we aggregate the epochs from 10s to 60s by adding the counts for the six consecutive 10s epochs that fall into the same 60s epoch.
 
-```{r }
+```{r}
 # Collapse epochs from 10 sec to 60 sec by summing
 agdb_60s <- agdb_10s %>% collapse_epochs(60)
 agdb_60s
@@ -72,7 +72,7 @@ agdb_60s
 
 The Sadeh algorithm is primarily used for younger adolescents as the supporting research was performed on children and young adults. It requires 60s epochs and uses an 11-minute window that includes the five previous and five future epochs. The `apply_sadeh` function implements the algorithm as described in the ActiGraph user manual.
 
-```{r }
+```{r}
 agdb_60s %>% apply_sadeh()
 ```
 
@@ -80,7 +80,7 @@ agdb_60s %>% apply_sadeh()
 
 The Cole-Kripke algorithm is primarily used for adult populations as the supporting research was performed on subjects ranging from 35 to 65 years of age. Like the Sadeh algorithm, it requires 60s epochs and uses a 7-minute window that includes the four previous and two future epochs. The `apply_cole_kripke` function implements the algorithm as described in the ActiGraph user manual.
 
-```{r }
+```{r}
 agdb_60s %>% apply_cole_kripke()
 ```
 
@@ -88,7 +88,7 @@ agdb_60s %>% apply_cole_kripke()
 
 Once each one-minute epoch is labeled as asleep (S) or awake (W), we can use the Tudor-Locke algorithm to detect periods of time in bed and, for each period, to compute sleep quality metrics such as total minutes in bed, total sleep time, number and average length of awakenings, movement and fragmentation index.
 
-```{r }
+```{r}
 agdb_60s %>% apply_sadeh() %>% apply_tudor_locke()
 ```
 
@@ -96,14 +96,14 @@ agdb_60s %>% apply_sadeh() %>% apply_tudor_locke()
 
 Long stretches that consist almost entirely of zero counts (zero epochs) suggest that the device wasn't worn at all and therefore should be excluded from downstream analysis. The Troiano algorithm for detecting periods of non-wear formalizes a technique used to analyze the 2003-2004 NHANES data, which allows a non-wear period to contain a few nonzero epochs of artifactual movement (spikes). The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by a fixed number of consecutive zero epochs. These function return a table non-wear start and end periods.
 
-```{r }
+```{r}
 agdb_60s %>% apply_troiano()
 agdb_60s %>% apply_choi()
 ```
 
 Alternatively, you classify non-wear time at the epoch level using `apply_weartime`. This function returns the input data with an additional wear column.
 
-```{r }
+```{r}
 agdb_60s %>% apply_weartime(fun = apply_choi)
 ```
 
@@ -111,7 +111,7 @@ agdb_60s %>% apply_weartime(fun = apply_choi)
 
 Each epoch can be scored with an activity intensity using a set of count-based cutpoints. There are several popular sets of cutpoints to choose from, or you can make your own. The `apply_cutpoints` function returns the input data with an extra column representing activity category.
 
-```{r }
+```{r}
 agdb_10s %>% apply_cutpoints("evenson_children")
 ```
 
@@ -119,7 +119,7 @@ agdb_10s %>% apply_cutpoints("evenson_children")
 
 A summary of activity data for specified time intervals (such as 30 minute, 3 hour, or 1 day blocks) can be created.   
 
-```{r }
+```{r}
 summary <- agdb_10s %>% 
   apply_weartime() %>% 
   apply_cutpoints("evenson_children") %>% 
@@ -130,17 +130,34 @@ summary
 
 ### Plotting summary data
 
-Summary data can be visualised in a day-level plot 
+Summary data can be visualised in a day-level plot.
 
-```{r }
+```{r}
 plot_activity_summary(summary)
 ```
 
-### Batch process
+### Filtering data based on weartime criteria
 
-You can process all agd files in a directory with a simple for loop
+In many cases, days are excluded from analyses if the Actigraph is not worn for a sufficient period of time. The `apply_weartime_filter` function will remove day-level observations if weartime is insufficient. Seperate wear criteria can be specified for weekends if required.
 
-```{r , eval = FALSE}
+```{r}
+summary <- agdb_10s %>%
+  apply_weartime() %>% 
+  apply_cutpoints("evenson_children") %>% 
+  summarise_agd(time = "1 day") 
+
+summary
+
+summary %>%
+  apply_weartime_filter(hours = 12, days = 1)
+
+```
+
+### Batch processing
+
+You can process all agd files in a directory with a simple for loop. Here are two practical examples:
+
+```{r, eval = FALSE}
 library(actigraph.sleepr)
 library(ggplot2)
 
@@ -152,7 +169,7 @@ for (file in files) {
     apply_weartime() %>%
     apply_cutpoints("evenson_children")
 
-  # Save each data file to cav
+  # Save each data file to csv
   write.csv(data, file = gsub('.agd', '.csv', file), row.names = FALSE)
 
   # Save a summary plot of each data record
@@ -163,6 +180,41 @@ for (file in files) {
   ggsave(filename = gsub('.agd', '.png', file), plot = plot, 
          width = 26, height = 21, units = 'cm')
 }
+```
+
+This example combines data from all files, and uses a weartime filter to keep valid days only:
+
+```{r, eval = FALSE}
+library(actigraph.sleepr)
+library(lubridate)
+
+files <- list.files(choose.dir(), pattern = '*.agd')
+
+i <- 0
+summary <- list()
+
+for (file in files) {
+
+  i <- i + 1
+
+  summary[[i]] <- read_agd(file) %>%
+    collapse_epochs(60) %>%
+    apply_weartime() %>%
+    apply_cutpoints("evenson_children") %>%
+    summarise_agd("1 day") %>%
+    apply_weartime_filter(hours = 7, days = 3)
+
+  cat('[', i, '/', length(files), ']\n', sep = '')
+}
+
+summary <- bind_rows(summary)
+
+# Overall summary by file
+day_summary <- summary %>%
+  group_by(pid) %>%
+  mutate(valid_days = n()) %>%
+  select(-timestamp) %>%
+  summarise_all(mean)
 ```
 
 ### References

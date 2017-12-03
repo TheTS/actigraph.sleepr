@@ -20,12 +20,13 @@ summarise_agd <- function(agdb, time = "1 hour") {
 
   cols <- tolower(attr(agdb, "intensity_categories"))
   agdb$non_wear <- ifelse(agdb$wear == 0, attr(agdb, "epochlength"), 0)
+  agdb$wear <- ifelse(agdb$wear == 1, attr(agdb, "epochlength"), 0)
 
   for (i in 1:length(cols)) {
     agdb[,cols[i]] <- ifelse(agdb$activity == i & agdb$non_wear==0, attr(agdb, "epochlength"), 0)
   }
 
-  cols <- intersect(c("timestamp", "steps", "non_wear",
+  cols <- intersect(c("timestamp", "steps", "wear", "non_wear",
     cols, grep('incline', names(agdb), value = TRUE)), names(agdb))
 
   agdb %>%

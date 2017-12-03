@@ -15,7 +15,7 @@
 #' @importFrom data.table rleid
 #' @importFrom zoo na.locf na.trim na.spline
 #' @importFrom RcppRoll roll_mean roll_sd roll_sum
-#' @importFrom lubridate duration ymd_hms time_length is.POSIXct floor_date
+#' @importFrom lubridate duration ymd_hms time_length is.POSIXct floor_date wday
 #' @importFrom stringr str_replace
 NULL
 

@@ -1,4 +1,4 @@
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TheTS/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/TheTS/actigraph-sleepr) [![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraph.sleepr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--12--01-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/TheTS/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraph.sleepr)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/TheTS/actigraph.sleepr?branch=master&svg=true)](https://ci.appveyor.com/project/TheTS/actigraph-sleepr) [![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraph.sleepr) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--12--03-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/TheTS/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraph.sleepr)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ### actigraph.sleepr: Sleep and non-wear detection from ActiGraph data
@@ -263,25 +263,25 @@ summary <- agdb_10s %>%
   summarise_agd(time = "1 hour")
 
 summary
-#> # A tibble: 26 x 6
-#>              timestamp non_wear sedentary light moderate vigorous
-#>                 <dttm>    <dbl>     <dbl> <dbl>    <dbl>    <dbl>
-#>  1 2012-06-27 10:00:00        0      4.33  1.33     0.33     0.00
-#>  2 2012-06-27 11:00:00        0     53.17  4.50     0.50     1.83
-#>  3 2012-06-27 12:00:00        0     55.67  3.67     0.00     0.67
-#>  4 2012-06-27 13:00:00        0     47.17  8.83     1.17     2.83
-#>  5 2012-06-27 14:00:00        0     45.50 12.17     0.17     2.17
-#>  6 2012-06-27 15:00:00        0     46.00 12.00     0.50     1.50
-#>  7 2012-06-27 16:00:00        0     46.83  6.17     1.83     5.17
-#>  8 2012-06-27 17:00:00        0     37.17 10.17     3.50     9.17
-#>  9 2012-06-27 18:00:00        0     46.17  9.67     1.00     3.17
-#> 10 2012-06-27 19:00:00        0     53.50  4.83     0.50     1.17
+#> # A tibble: 26 x 7
+#>              timestamp  wear non_wear sedentary light moderate vigorous
+#>                 <dttm> <dbl>    <dbl>     <dbl> <dbl>    <dbl>    <dbl>
+#>  1 2012-06-27 10:00:00     6        0      4.33  1.33     0.33     0.00
+#>  2 2012-06-27 11:00:00    60        0     53.17  4.50     0.50     1.83
+#>  3 2012-06-27 12:00:00    60        0     55.67  3.67     0.00     0.67
+#>  4 2012-06-27 13:00:00    60        0     47.17  8.83     1.17     2.83
+#>  5 2012-06-27 14:00:00    60        0     45.50 12.17     0.17     2.17
+#>  6 2012-06-27 15:00:00    60        0     46.00 12.00     0.50     1.50
+#>  7 2012-06-27 16:00:00    60        0     46.83  6.17     1.83     5.17
+#>  8 2012-06-27 17:00:00    60        0     37.17 10.17     3.50     9.17
+#>  9 2012-06-27 18:00:00    60        0     46.17  9.67     1.00     3.17
+#> 10 2012-06-27 19:00:00    60        0     53.50  4.83     0.50     1.17
 #> # ... with 16 more rows
 ```
 
 ### Plotting summary data
 
-Summary data can be visualised in a day-level plot
+Summary data can be visualised in a day-level plot.
 
 ``` r
 plot_activity_summary(summary)
@@ -289,9 +289,35 @@ plot_activity_summary(summary)
 
 ![](README-unnamed-chunk-14-1.png)
 
-### Batch process
+### Filtering data based on weartime criteria
 
-You can process all agd files in a directory with a simple for loop
+In many cases, days are excluded from analyses if the Actigraph is not worn for a sufficient period of time. The `apply_weartime_filter` function will remove day-level observations if weartime is insufficient. Seperate wear criteria can be specified for weekends if required.
+
+``` r
+summary <- agdb_10s %>%
+  apply_weartime() %>% 
+  apply_cutpoints("evenson_children") %>% 
+  summarise_agd(time = "1 day") 
+
+summary
+#> # A tibble: 2 x 7
+#>    timestamp   wear non_wear sedentary light moderate vigorous
+#>       <dttm>  <dbl>    <dbl>     <dbl> <dbl>    <dbl>    <dbl>
+#> 1 2012-06-27 786.00        0    644.33 91.17    14.67    35.83
+#> 2 2012-06-28 388.83      325    342.00 32.83     3.83    10.17
+
+summary %>%
+  apply_weartime_filter(hours = 12, days = 1)
+#> # A tibble: 1 x 8
+#> # Groups:   pid [1]
+#>    timestamp  wear non_wear sedentary light moderate vigorous      pid
+#>       <dttm> <dbl>    <dbl>     <dbl> <dbl>    <dbl>    <dbl>    <chr>
+#> 1 2012-06-27   786        0    644.33 91.17    14.67    35.83 GT3XPlus
+```
+
+### Batch processing
+
+You can process all agd files in a directory with a simple for loop. Here are two practical examples:
 
 ``` r
 library(actigraph.sleepr)
@@ -305,7 +331,7 @@ for (file in files) {
     apply_weartime() %>%
     apply_cutpoints("evenson_children")
 
-  # Save each data file to cav
+  # Save each data file to csv
   write.csv(data, file = gsub('.agd', '.csv', file), row.names = FALSE)
 
   # Save a summary plot of each data record
@@ -316,6 +342,41 @@ for (file in files) {
   ggsave(filename = gsub('.agd', '.png', file), plot = plot, 
          width = 26, height = 21, units = 'cm')
 }
+```
+
+This example combines data from all files, and uses a weartime filter to keep valid days only:
+
+``` r
+library(actigraph.sleepr)
+library(lubridate)
+
+files <- list.files(choose.dir(), pattern = '*.agd')
+
+i <- 0
+summary <- list()
+
+for (file in files) {
+
+  i <- i + 1
+
+  summary[[i]] <- read_agd(file) %>%
+    collapse_epochs(60) %>%
+    apply_weartime() %>%
+    apply_cutpoints("evenson_children") %>%
+    summarise_agd("1 day") %>%
+    apply_weartime_filter(hours = 7, days = 3)
+
+  cat('[', i, '/', length(files), ']\n', sep = '')
+}
+
+summary <- bind_rows(summary)
+
+# Overall summary by file
+day_summary <- summary %>%
+  group_by(pid) %>%
+  mutate(valid_days = n()) %>%
+  select(-timestamp) %>%
+  summarise_all(mean)
 ```
 
 ### References

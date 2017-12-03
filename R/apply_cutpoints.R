@@ -1,7 +1,7 @@
 #' Apply "cutpoints" to physical activity data
 #'
 #' Each epoch is assigned to an intensity category based on a set of "cutpoints".
-#' @param agdb A \code{tibble} of activity data optained from \code{\link{read_agd}}.
+#' @param agdb A \code{tibble} of activity data obtained from \code{\link{read_agd}}.
 #' @param cutpoints A set of cutpoints to use. This can one of several predefined strings, or a custom list (see below).
 #' @param use_magnitude Logical. If true, the vector magnitude is used to measure activity intensity; otherwise the axis1 value is used. The default is \code{FALSE}. Note that several predifined cutpoints will override the default (e.g. 'freedson_adult_vm').
 #' @param custom_cutpoints A list of custom cutpoints. This must be a list containing two vectors. The first contains count threshold ranges (must be an even number), and the second contains a list of category names. These names are used as column names when using \code{\link{summarise_agd}}.See below for an example.

@@ -7,7 +7,7 @@
 apply_weartime(agdb, fun = apply_troiano, ...)
 }
 \arguments{
-\item{agdb}{A \code{tibble} of activity data optained from \code{\link{read_agd}}.}
+\item{agdb}{A \code{tibble} of activity data obtained from \code{\link{read_agd}}.}
 
 \item{fun}{The weartime function to employ (either \code{apply_troiano} or \code{apply_choi}). The default is \code{apply_troiano}.}
 
