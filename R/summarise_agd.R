@@ -26,13 +26,13 @@ summarise_agd <- function(agdb, time = "1 hour") {
     agdb[,cols[i]] <- ifelse(agdb$activity == i & agdb$non_wear==0, attr(agdb, "epochlength"), 0)
   }
 
-  cols <- intersect(c("timestamp", "steps", "wear", "non_wear",
-    cols, grep('incline', names(agdb), value = TRUE)), names(agdb))
+  cols <- intersect(c("timestamp", grep('axis', names(agdb), value = TRUE),
+    "steps", "wear", "non_wear", cols, grep('incline', names(agdb), value = TRUE)), names(agdb))
 
   agdb %>%
     select(cols) %>%
     mutate_if(is.numeric, as.integer) %>%
-    mutate_at(vars(-matches('steps'), -.data$timestamp), funs(./60)) %>%
+    mutate_at(vars(-matches('steps'), -starts_with('axis'), -.data$timestamp), funs(./60)) %>%
     group_by(timestamp = cut(.data$timestamp, time)) %>%
     summarise_all(funs(sum(.))) %>%
     mutate_if(is.numeric, funs(round(., 2))) %>%
