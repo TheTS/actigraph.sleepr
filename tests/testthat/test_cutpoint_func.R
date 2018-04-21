@@ -73,7 +73,7 @@ test_that("apply_cutpoints and apply_weartime_filter returns same result as Acti
     summarise_agd("1 day") %>%
     apply_weartime_filter(hours = 7, days = 1)
 
-  agdb <- unname(unlist(agdb[1, c(5:8, 2:3)]))
+  agdb <- unname(unlist(agdb[1, c(8:11, 5:6)]))
 
   actilife <- read_csv(csv_file)
   actilife <- unname(unlist(actilife[1, 3:8]))

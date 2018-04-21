@@ -63,22 +63,21 @@ expand_timestamp <- function(start, end, units = "1 min") {
 #'   apply_choi(min_period_len = 45) %>%
 #'   expand_periods(period_start, period_end, units = "30 mins")
 #' @export
-expand_periods <- function(periods, start_var, end_var,
-                           units = "1 min") {
+expand_periods <- function(periods, start_var, end_var, units = "1 min") {
   start_var <- enquo(start_var)
   end_var <- enquo(end_var)
   periods %>%
     do(expand_periods_(.data, !!start_var, !!end_var, units))
 }
-expand_periods_ <- function(periods, start_var, end_var,
-                            units = "1 min") {
+
+expand_periods_ <- function(periods, start_var, end_var, units = "1 min") {
   start_var <- enquo(start_var)
   end_var <- enquo(end_var)
   periods %>%
     mutate(period_id = row_number()) %>%
-    mutate(timestamp = map2(!!start_var, !!end_var, expand_timestamp,
-                            units)) %>%
-    select(.data$period_id, .data$timestamp) %>%
+    mutate(timestamp = map2(!!start_var, !!end_var, expand_timestamp, units)) %>%
+    select(period_id, timestamp) %>%
+    mutate(timestamp = timestamp %>% map(function(x) tibble(timestamp = x))) %>% # To prevent unnest bug
     unnest()
 }
 get_epoch_length <- function(epochs) {
