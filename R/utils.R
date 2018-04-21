@@ -18,20 +18,19 @@
 complement_periods <- function(periods, epochs, start_var, end_var) {
   if (!nrow(periods))
     return(epochs %>%
-             summarise(period_start = first(.data$timestamp),
-                       period_end = last(.data$timestamp),
-                       length = time_length(.data$period_end -
-                                              .data$period_start, "min")))
+             summarise(period_start = first(timestamp),
+                       period_end = last(timestamp),
+                       length = time_length(period_end - period_start, "min")))
   start_var <- enquo(start_var)
   end_var <- enquo(end_var)
   combine_epochs_periods(epochs, periods, !!start_var, !!end_var) %>%
-    mutate(rev_id = rleid(is.na(.data$period_id))) %>%
-    filter(is.na(.data$period_id)) %>%
-    group_by(.data$rev_id, add = TRUE) %>%
-    summarise(period_start = first(.data$timestamp),
-              period_end = last(.data$timestamp),
+    mutate(rev_id = rleid(is.na(period_id))) %>%
+    filter(is.na(period_id)) %>%
+    group_by(rev_id, add = TRUE) %>%
+    summarise(period_start = first(timestamp),
+              period_end = last(timestamp),
               length = n()) %>%
-    select(- .data$rev_id)
+    select(-rev_id)
 }
 
 #' Expand a time period into a vector of equally spaced time points
@@ -80,14 +79,15 @@ expand_periods_ <- function(periods, start_var, end_var, units = "1 min") {
     mutate(timestamp = timestamp %>% map(function(x) tibble(timestamp = x))) %>% # To prevent unnest bug
     unnest()
 }
+
 get_epoch_length <- function(epochs) {
 
   if (!exists("timestamp", epochs)) return(NULL)
 
   epoch_len <- epochs %>%
-    mutate(len = time_length(.data$timestamp - lag(.data$timestamp))) %>%
+    mutate(len = time_length(timestamp - lag(timestamp))) %>%
     filter(row_number() > 1) %>%
-    .$len
+    pull(len)
 
   if (n_distinct(epoch_len) != 1) NULL else first(epoch_len)
 }

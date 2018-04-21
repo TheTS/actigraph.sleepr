@@ -18,8 +18,7 @@
 #'   collapse_epochs(60)
 #' @export
 
-collapse_epochs <- function(agdb, epoch_len_out,
-                            use_incomplete = TRUE) {
+collapse_epochs <- function(agdb, epoch_len_out, use_incomplete = TRUE) {
 
   check_args_collapse_method(agdb, epoch_len_out)
   collapse_factor <- epoch_len_out / attr(agdb, "epochlength")
@@ -48,13 +47,13 @@ collapse_epochs_ <- function(data, collapse_factor, use_incomplete) {
 
   data <- data %>%
     select_at(vars("timestamp", selected)) %>%
-    mutate(timestamp = floor_date(.data$timestamp, "mins"), n = 1L) %>%
-    group_by(.data$timestamp) %>%
+    mutate(timestamp = floor_date(timestamp, "mins"), n = 1L) %>%
+    group_by(timestamp) %>%
     summarise_all(sum)
 
   if (!use_incomplete) {
-    data <- data %>% filter(.data$n == collapse_factor)
+    data <- data %>% filter(n == collapse_factor)
   }
 
-  data %>% select(- n)
+  data %>% select(-n)
 }

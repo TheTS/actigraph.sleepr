@@ -77,32 +77,31 @@ apply_troiano_seq_ <- function(data,
                                use_magnitude) {
   data %>%
     add_magnitude() %>%
-    mutate(count = if (use_magnitude) .data$magnitude else .data$axis1,
-           wear = if_else(.data$count <= activity_threshold |
-                            .data$count > max_nonzero_count, 0L, 1L),
-           wear = if_else(.data$count > spike_stoplevel, 2L, .data$wear)) %>%
-    group_by(rleid = rleid(.data$wear)) %>%
-    summarise(wear = first(.data$wear),
-              timestamp = first(.data$timestamp),
+    mutate(count = if (use_magnitude) magnitude else axis1,
+           wear = if_else(count <= activity_threshold |
+                            count > max_nonzero_count, 0L, 1L),
+           wear = if_else(count > spike_stoplevel, 2L, wear)) %>%
+    group_by(rleid = rleid(wear)) %>%
+    summarise(wear = first(wear),
+              timestamp = first(timestamp),
               length = n()) %>%
-    mutate(wear = if_else(.data$wear == 1L &
-                            lead(.data$wear, default = 1L) == 0L &
-                            .data$length <= spike_tolerance,
-                          NA_integer_, .data$wear),
+    mutate(wear = if_else(wear == 1L &
+                          lead(wear, default = 1L) == 0L &
+                          length <= spike_tolerance,
+                          NA_integer_, wear),
            # Since `na.locf` can't impute leading NAs, fill in those with 1s
-           wear = if_else(row_number() == 1 & is.na(.data$wear),
-                          1L, .data$wear),
+           wear = if_else(row_number() == 1 & is.na(wear), 1L, wear),
            # Fill in NAs with the most recent zero/nonzero wear state
-           wear = na.locf(.data$wear)) %>%
-    group_by(rleid = rleid(.data$wear)) %>%
-    summarise(wear = first(.data$wear),
-              timestamp = first(.data$timestamp),
-              length = sum(.data$length)) %>%
-    filter(.data$wear == 0L,
-           .data$length >= min_period_len) %>%
-    rename(period_start = .data$timestamp) %>%
-    mutate(period_end = .data$period_start + duration(.data$length, "mins")) %>%
-    select(.data$period_start, .data$period_end, .data$length)
+           wear = na.locf(wear)) %>%
+    group_by(rleid = rleid(wear)) %>%
+    summarise(wear = first(wear),
+              timestamp = first(timestamp),
+              length = sum(length)) %>%
+    filter(wear == 0L,
+           length >= min_period_len) %>%
+    rename(period_start = timestamp) %>%
+    mutate(period_end = period_start + duration(length, "mins")) %>%
+    select(period_start, period_end, length)
 }
 
 apply_troiano_nonseq_ <- function(data,
@@ -113,22 +112,17 @@ apply_troiano_nonseq_ <- function(data,
                                   use_magnitude) {
   data %>%
     add_magnitude() %>%
-    mutate(count =
-             if (use_magnitude) .data$magnitude else as.numeric(.data$axis1),
-           count =
-             if_else(.data$count > max_nonzero_count, 0, .data$count),
-           length = wle(.data$count, activity_threshold,
+    mutate(count = if (use_magnitude) magnitude else as.numeric(axis1),
+           count = if_else(count > max_nonzero_count, 0, count),
+           length = wle(count, activity_threshold,
                         spike_tolerance, spike_stoplevel)) %>%
-    filter(.data$length >= min_period_len) %>%
-    rename(period_start = .data$timestamp) %>%
-    select(.data$period_start, .data$length) %>%
-    mutate(period_end =
-             .data$period_start + duration(.data$length, "mins")) %>%
-    mutate(a = time_length(.data$period_start -
-                             first(.data$period_start), "min"),
-           b = time_length(.data$period_end -
-                             first(.data$period_start), "min")) %>%
+    filter(length >= min_period_len) %>%
+    rename(period_start = timestamp) %>%
+    select(period_start, length) %>%
+    mutate(period_end = period_start + duration(length, "mins")) %>%
+    mutate(a = time_length(period_start - first(period_start), "min"),
+           b = time_length(period_end - first(period_start), "min")) %>%
     # Remove periods which overlap with previous periods
-    filter(overlap(.data$a, .data$b)) %>%
-    select(.data$period_start, .data$period_end, .data$length)
+    filter(overlap(a, b)) %>%
+    select(period_start, period_end, length)
 }

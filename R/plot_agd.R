@@ -107,17 +107,17 @@ plot_activity_summary <- function(agdb_summary,
 
   data <- agdb_summary %>%
     select(c("timestamp", cols)) %>%
-    gather("activity", "minutes", -.data$timestamp) %>%
+    gather("activity", "minutes", -timestamp) %>%
     arrange(.data$timestamp) %>%
-    mutate(date = as.Date.factor(.data$timestamp)) %>%
-    mutate(date = paste(.data$date, "\n", weekdays(.data$date)),
-           time = strftime(.data$timestamp, format = "%H:%M:%S"),
-           activity = factor(.data$activity, levels = cols, labels = cols))
+    mutate(date = as.Date.factor(timestamp)) %>%
+    mutate(date = paste(date, "\n", weekdays(date)),
+           time = strftime(timestamp, format = "%H:%M:%S"),
+           activity = factor(activity, levels = cols, labels = cols))
 
   if (!is.null(start_date) & !is.null(end_date)) {
     start_date <- as.Date(start_date)
     end_date <- as.Date(end_date)
-    data <- data %>% filter((.data$date >= start_date) & (.data$date <= end_date))
+    data <- data %>% filter((date >= start_date) & (date <= end_date))
   }
 
   if (is.null(colours))
@@ -126,7 +126,7 @@ plot_activity_summary <- function(agdb_summary,
 
   ggplot(data, aes_string(x = "time", y = "minutes", fill = "activity")) +
     geom_col() +
-    facet_grid(date~., switch = "both") +
+    facet_grid(date ~ ., switch = "both") +
     labs(title = paste("Name: ", attr(agdb_summary, "subjectname")),
          x = "", y = "", fill = "") +
     theme(axis.text.x = element_text(angle = 90),

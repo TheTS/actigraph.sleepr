@@ -25,8 +25,8 @@ apply_weartime <- function(agdb, fun = apply_troiano, ...){
 
   agdb %>%
     combine_epochs_periods(non_wear, non_wear$period_start, non_wear$period_end) %>%
-    mutate(wear = ifelse(is.na(.data$period_id), 1L, 0L)) %>% #TODO interp
-    select_(.dots = '-period_id')
+    mutate(wear = ifelse(is.na(period_id), 1L, 0L)) %>% #TODO interp
+    select(-period_id)
 }
 
 #' Apply a weartime filter to an activity data frame
@@ -64,11 +64,11 @@ apply_weartime_filter <- function(agdb, hours , days,
 
   agdb %>%
     mutate(pid = attr(., "subjectname"),
-           wend = wday(.data$timestamp, week_start = 1) > 5) %>%
-    filter((.data$wear > (hours * 60) & !.data$wend) |
-             (.data$wear > (hours_we * 60) & .data$wend)) %>%
-    group_by(.data$pid) %>%
-    filter((length(.data$pid) >= days) &
-             (sum(.data$wend) >= days_we)) %>%
-    select(-.data$wend)
+           wend = wday(timestamp, week_start = 1) > 5) %>%
+    filter((wear > (hours * 60) & !wend) |
+             (wear > (hours_we * 60) & wend)) %>%
+    group_by(pid) %>%
+    filter((length(pid) >= days) &
+             (sum(wend) >= days_we)) %>%
+    select(-wend)
 }

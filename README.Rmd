@@ -25,12 +25,25 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 The `actigraphr` package is used to analyse accelerometer data obtaiend from ActiGraph devices. It includes several non-wear, sleep, and physical activity detection algorithms. 
 
-* Non-wear detection algorithms: Troiano [@Troiano:2008aa] and Choi [@Choi:2011aa]
-* Sleep scoring algorithms: Sadeh [@Sadeh:1994aa], Cole-Kripke [@Cole:1992aa] and Tudor-Locke [@Tudor-Locke:2014aa], 
-* Physical activity cutpoints: Freedson adult [@Freedson:1998aa], Freedson adult VM [@Freedson:2011aa], Freedson children [@Freedson:2005aa], Evenson children [@Evenson:2008aa], Mattocks  children [@Mattocks:2007aa], and Puyau children [@Puyau:2002aa].
+This package is an extension of the [`actigraph.sleepr`](https://github.com/dipetkov/actigraph.sleepr) package, written by Desislava Petkova.
 
+Non-wear detection algorithms
+* Troiano [@Troiano:2008aa]
+* Choi [@Choi:2011aa]
 
-This package is an extension of the [`actigraph.sleepr` package](https://github.com/dipetkov/actigraph.sleepr).
+Sleep scoring algorithms
+* Sadeh [@Sadeh:1994aa]
+* Cole-Kripke [@Cole:1992aa]
+* Tudor-Locke [@Tudor-Locke:2014aa]
+
+Physical activity thresholds
+* Freedson adult [@Freedson:1998aa]
+* Freedson adult VM [@Freedson:2011aa]
+* Freedson children [@Freedson:2005aa]
+* Evenson children [@Evenson:2008aa]
+* Mattocks  children [@Mattocks:2007aa]
+* Puyau children [@Puyau:2002aa]
+
 
 ### Installation
 
@@ -38,5 +51,9 @@ This package is an extension of the [`actigraph.sleepr` package](https://github.
 library("devtools")
 install_github("TheTS/actigraphr")
 ```
+
+### Examples
+
+Documentation is on its way!
 
 ### References

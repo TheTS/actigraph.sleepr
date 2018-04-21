@@ -56,38 +56,35 @@ apply_choi_ <- function(data,
                         use_magnitude) {
   data %>%
     add_magnitude() %>%
-    mutate(count = if (use_magnitude) .data$magnitude else .data$axis1,
-           wear = if_else(.data$count == 0, 0L, 1L)) %>%
-    group_by(rleid = rleid(.data$wear)) %>%
-    summarise(wear = first(.data$wear),
-              timestamp = first(.data$timestamp),
+    mutate(count = if (use_magnitude) magnitude else axis1,
+           wear = if_else(count == 0, 0L, 1L)) %>%
+    group_by(rleid = rleid(wear)) %>%
+    summarise(wear = first(wear),
+              timestamp = first(timestamp),
               length = n()) %>%
     # Let (spike, zero, zero, spike) -> (spike of length 4)
     # as long as (zero, zero) is shorter than spike_tolerance
-    mutate(wear = if_else(.data$wear == 0L & .data$length < spike_tolerance,
-                          1L, .data$wear)) %>%
-    group_by(rleid = rleid(.data$wear)) %>%
-    summarise(wear = first(.data$wear),
-              timestamp = first(.data$timestamp),
-              length = sum(.data$length)) %>%
+    mutate(wear = if_else(wear == 0L & length < spike_tolerance, 1L, wear)) %>%
+    group_by(rleid = rleid(wear)) %>%
+    summarise(wear = first(wear),
+              timestamp = first(timestamp),
+              length = sum(length)) %>%
     # Ignore artifactual movement intervals
-    mutate(wear =
-             if_else(.data$wear == 1L & .data$length <= spike_tolerance &
-                       lead(.data$length, default = 0L) >= min_window_len &
-                       lag(.data$length, default = 0L) >= min_window_len,
-                     0L, .data$wear)) %>%
-    group_by(rleid = rleid(.data$wear)) %>%
-    summarise(wear = first(.data$wear),
-              timestamp = first(.data$timestamp),
-              length = sum(.data$length)) %>%
-    filter(.data$wear == 0L,
+    mutate(wear = if_else(wear == 1L & length <= spike_tolerance &
+                          lead(length, default = 0L) >= min_window_len &
+                          lag(length, default = 0L) >= min_window_len, 0L, wear)) %>%
+    group_by(rleid = rleid(wear)) %>%
+    summarise(wear = first(wear),
+              timestamp = first(timestamp),
+              length = sum(length)) %>%
+    filter(wear == 0L,
            # TODO: Filtering if the row_number is 1 or n(),
            # regardless of the period length, means that
            # the initial and final non-wear periods can be shorter.
-           .data$length >= min_period_len # | row_number() %in% c(1, n())
+           length >= min_period_len # | row_number() %in% c(1, n())
            ) %>%
-    rename(period_start = .data$timestamp) %>%
-    mutate(period_end = .data$period_start +
-             duration(.data$length, "mins")) %>%
-    select(.data$period_start, .data$period_end, .data$length)
+    rename(period_start = timestamp) %>%
+    mutate(period_end = period_start +
+             duration(length, "mins")) %>%
+    select(period_start, period_end, length)
 }

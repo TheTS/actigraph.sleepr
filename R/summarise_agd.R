@@ -32,8 +32,8 @@ summarise_agd <- function(agdb, time = "1 hour") {
   agdb %>%
     select(cols) %>%
     mutate_if(is.numeric, as.integer) %>%
-    mutate_at(vars(-matches('steps'), -starts_with('axis'), -.data$timestamp), funs(./60)) %>%
-    group_by(timestamp = cut(.data$timestamp, time)) %>%
+    mutate_at(vars(-matches('steps'), -starts_with('axis'), -timestamp), funs(./60)) %>%
+    group_by(timestamp = cut(timestamp, time)) %>%
     summarise_all(funs(sum(.))) %>%
     mutate_if(is.numeric, funs(round(., 2))) %>%
     mutate_if(is.factor, as.POSIXct)
