@@ -1,12 +1,12 @@
 
-library("actigraph.sleepr")
+library("actigraphr")
 library("readr")
 library("dplyr")
 
 context("Non-wear detection algorithm")
 test_that("apply_troiano returns a tbl_period", {
   file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                      package = "actigraph.sleepr")
+                      package = "actigraphr")
   agdb_10s <- read_agd(file)
   agdb_60s <- collapse_epochs(agdb_10s, 60)
   agdb_nonwear <- apply_troiano(agdb_60s)
@@ -15,10 +15,10 @@ test_that("apply_troiano returns a tbl_period", {
 test_that("apply_troiano return same result as ActiLife 6", {
   agd_file <-
     system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                package = "actigraph.sleepr")
+                package = "actigraphr")
   csv_file <-
     system.file("extdata", "GT3XPlus-RawData-Day01-Troiano-periods.csv",
-                package = "actigraph.sleepr")
+                package = "actigraphr")
   join_vars <- c("period_start", "period_end", "length")
   actilife <- read_csv(csv_file)
   epochs <- read_agd(agd_file) %>% collapse_epochs(60)
@@ -64,9 +64,9 @@ test_that("apply_troiano return same result as ActiLife 6", {
 })
 test_that("apply_choi return same result as ActiLife 6", {
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-Choi-periods.csv",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   join_vars <- c("period_start", "period_end", "length")
   actilife <- read_csv(csv_file)
   epochs <- read_agd(agd_file) %>% collapse_epochs(60)

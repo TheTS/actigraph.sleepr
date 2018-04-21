@@ -1,20 +1,22 @@
-Package: actigraph.sleepr
+Package: actigraphr
 Type: Package
-Title: Detect Periods of Sleep and Non-Wear from ActiGraph Data
+Title: Detect Non-Wear, Sleep and Physical Activity from ActiGraph Data
 Version: 0.1.0
-Author: Desislava Petkova
-Maintainer: Desislava Petkova <desislavka@gmail.com>
+Authors@R: c(as.person("Desislava Petkova <desislavka@gmail.com> [aut, cre]"),
+             as.person("Tom Stewart <tom.stewart@aut.ac.nz> [aut, ctb]"))
+Maintainer: Tom Stewart <tom.stewart@aut.ac.nz>
 Description: Reads *.agd files exported from ActiGraph devices; 
-  implements the Troiano and Choi algorithms for detecting periods on non-wear;
-  implements the Sadeh and Cole-Kripke algorithms for detecting asleep/awake state
-  and the Tudor-Locke algorithm to detect sleep periods from asleep/awake states.
-URL: http://github.com/dipetkov/actigraph.sleepr
-BugReports: http://github.com/dipetkov/actigraph.sleepr/issues
+  implements the Troiano and Choi algorithms for detecting periods of non-wear;
+  implements the Sadeh and Cole-Kripke algorithms for detecting sleep/awake state
+  and the Tudor-Locke algorithm to detect sleep periods from asleep/awake states;
+  applies several cut points for scoring activity intensity
+URL: http://github.com/TheTS/actigraphr
+BugReports: http://github.com/TheTS/actigraphr/issues
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.0.1
 Depends:
   R (>= 3.2.4),
   dplyr (>= 0.7.1),

@@ -1,14 +1,14 @@
 
-library("actigraph.sleepr")
+library("actigraphr")
 library("readr")
 library("dplyr")
 
 context("Sleep scoring algorithms")
 test_that("apply_sadeh/apply_cole_kripke return same result as ActiLife 6", {
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-sleep-awake.csv",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   actilife <- read_csv(csv_file)
   agdb_60s <- read_agd(agd_file) %>% collapse_epochs(60)
   agdb_sadeh <- agdb_60s %>% apply_sadeh()
@@ -20,7 +20,7 @@ test_that("apply_sadeh/apply_cole_kripke return same result as ActiLife 6", {
 context("Period detection algorithm")
 test_that("apply_tudor_locke returns a tbl_period", {
   file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                      package = "actigraph.sleepr")
+                      package = "actigraphr")
   periods <- read_agd(file) %>%
     collapse_epochs(60) %>%
     apply_sadeh() %>%
@@ -29,9 +29,9 @@ test_that("apply_tudor_locke returns a tbl_period", {
 })
 test_that("apply_tudor_locke return same result as ActiLife 6", {
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-sleep-periods.csv",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   join_vars <- c("in_bed_time", "out_bed_time", "efficiency", "duration",
                  "wake_after_onset", "nb_awakenings", "ave_awakening",
                  "movement_index", "fragmentation_index",

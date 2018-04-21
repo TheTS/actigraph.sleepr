@@ -9,7 +9,7 @@
 #' @seealso \code{\link{read_agd_raw}}
 #' @examples
 #' file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-#'                     package = "actigraph.sleepr")
+#'                     package = "actigraphr")
 #' read_agd(file)
 #'
 #' library("readr")
@@ -18,7 +18,7 @@
 #'
 #' # Read ActiGraph sleep watch data from the AGD files in a directory.
 #' # Write the raw activity data to csv files in the user's home directory.
-#' path_in <- system.file("extdata", package = "actigraph.sleepr")
+#' path_in <- system.file("extdata", package = "actigraphr")
 #' path_out <- path.expand("~")
 #'
 #' filenames <- list.files(path_in, pattern = ".agd", full.names = FALSE)
@@ -70,7 +70,7 @@ read_agd <- function(file, tz = "UTC") {
 #' @seealso \code{\link{read_agd}}
 #' @examples
 #' file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-#'                     package = "actigraph.sleepr")
+#'                     package = "actigraphr")
 #' str(read_agd_raw(file))
 #' @export
 read_agd_raw <- function(file, tz = "UTC") {

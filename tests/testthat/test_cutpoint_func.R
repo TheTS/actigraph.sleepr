@@ -1,5 +1,5 @@
 
-library("actigraph.sleepr")
+library("actigraphr")
 library("readr")
 library("dplyr")
 
@@ -10,7 +10,7 @@ test_that("apply_cutpoints returns same result as ActiLife 6", {
 
     csv_file <- system.file("extdata", paste("GT3XPlus-RawData-Day01-",
                                              cutpoints, "-summary.csv", sep = ""),
-                            package = "actigraph.sleepr")
+                            package = "actigraphr")
 
     agdb_10s <- read_agd(agd_file) %>%
       apply_cutpoints(cutpoints)
@@ -24,7 +24,7 @@ test_that("apply_cutpoints returns same result as ActiLife 6", {
   }
 
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
 
   check_cutpoint("freedson_adult", agd_file)
   check_cutpoint("freedson_adult_vm", agd_file)
@@ -36,10 +36,10 @@ test_that("apply_cutpoints returns same result as ActiLife 6", {
 test_that("apply_cutpoints with non-wear removed returns same result as ActiLife 6", {
 
   csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-evenson_children_nwr-summary.csv",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
 
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
 
   agdb <- read_agd(agd_file) %>%
     collapse_epochs(60) %>%
@@ -61,10 +61,10 @@ context("Activity summary with weartime filter")
 test_that("apply_cutpoints and apply_weartime_filter returns same result as ActiLife 6", {
 
   csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-evenson_children_7h-summary.csv",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
 
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
 
   agdb <- read_agd(agd_file) %>%
     collapse_epochs(60) %>%

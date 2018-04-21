@@ -22,7 +22,7 @@ Some Actigraph devices contain a capacitive sensor to detect monitor removal whe
 }
 \examples{
 file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                    package = "actigraph.sleepr")
+                    package = "actigraphr")
 str(read_agd_raw(file))
 }
 \references{

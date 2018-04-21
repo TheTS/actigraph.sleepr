@@ -1,5 +1,5 @@
 
-library("actigraph.sleepr")
+library("actigraphr")
 library("dplyr")
 library("readr")
 
@@ -14,20 +14,20 @@ if (requireNamespace("lintr", quietly = TRUE)) {
 context("Read agd files")
 test_that("read_agd returns a tbl_agd", {
   file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                      package = "actigraph.sleepr")
+                      package = "actigraphr")
   agdb <- read_agd(file)
   expect_s3_class(agdb, "tbl_agd")
 })
 test_that("Error if file doesn't exist", {
   file <- system.file("extdata", "dummy.agd",
-                      package = "actigraph.sleepr")
+                      package = "actigraphr")
   expect_error(read_agd(file))
 })
 
 context("Manipulate agdb data frame")
 test_that("all dplyr verbs work on a tbl_agd", {
   file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                      package = "actigraph.sleepr")
+                      package = "actigraphr")
   agdb <- read_agd(file) %>%
     mutate(magnitude = sqrt(axis1 ^ 2 + axis2 ^ 2 + axis3 ^ 2))
   expect_true(exists("magnitude", where = agdb))
@@ -38,7 +38,7 @@ test_that("all dplyr verbs work on a tbl_agd", {
 })
 test_that("group_by works as expected on tbl_agd with time gap", {
   file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                      package = "actigraph.sleepr")
+                      package = "actigraphr")
   agdb <- read_agd(file) %>%
     collapse_epochs(60) %>%
     filter(lubridate::hour(timestamp) != 0)
@@ -52,9 +52,9 @@ test_that("group_by works as expected on tbl_agd with time gap", {
 context("Collapse to 60s epochs")
 test_that("collapse_epochs returns same result as ActiLife 6", {
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-10sec60sec.csv",
-                          package = "actigraph.sleepr")
+                          package = "actigraphr")
   actilife <- read_csv(csv_file)
   agdb_60s <- read_agd(agd_file) %>%
     collapse_epochs(60, use_incomplete = TRUE)

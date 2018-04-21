@@ -19,7 +19,7 @@ Read ActiGraph sleep watch data from a database stored in an AGD file. Return a 
 }
 \examples{
 file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                    package = "actigraph.sleepr")
+                    package = "actigraphr")
 read_agd(file)
 
 library("readr")
@@ -28,7 +28,7 @@ library("tools")
 
 # Read ActiGraph sleep watch data from the AGD files in a directory.
 # Write the raw activity data to csv files in the user's home directory.
-path_in <- system.file("extdata", package = "actigraph.sleepr")
+path_in <- system.file("extdata", package = "actigraphr")
 path_out <- path.expand("~")
 
 filenames <- list.files(path_in, pattern = ".agd", full.names = FALSE)

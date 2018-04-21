@@ -1,4 +1,4 @@
 
 .onUnload <- function (libpath) {
-  library.dynam.unload("actigraph.sleepr", libpath)
+  library.dynam.unload("actigraphr", libpath)
 }

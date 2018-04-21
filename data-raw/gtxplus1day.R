@@ -1,6 +1,6 @@
 
 library("dplyr")
-library("actigraph.sleepr")
+library("actigraphr")
 
 gtxplus1day <- read_agd(file.path("data-raw", "actigraph",
                                   "GT3XPlus-RawData(1-20)",

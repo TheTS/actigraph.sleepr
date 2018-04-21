@@ -8,7 +8,7 @@ apply_cutpoints(agdb, cutpoints, use_magnitude = FALSE,
   custom_cutpoints = NULL)
 }
 \arguments{
-\item{agdb}{A \code{tibble} of activity data optained from \code{\link{read_agd}}.}
+\item{agdb}{A \code{tibble} of activity data obtained from \code{\link{read_agd}}.}
 
 \item{cutpoints}{A set of cutpoints to use. This can one of several predefined strings, or a custom list (see below).}
 

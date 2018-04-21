@@ -12,17 +12,17 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
                       collapse = TRUE, comment = "#>", out.width = "75%",
                       fig.asp = 1 / 1.6, fig.width = 5, dpi = 600,
                       fig.retina = NULL)
-pckg <- c("actigraph.sleepr", "dplyr", "tidyr", "lubridate", "ggplot2")
+pckg <- c("actigraphr", "dplyr", "tidyr", "lubridate", "ggplot2")
 inst <- suppressMessages(lapply(pckg, library, character.only = TRUE))
 theme_set(theme_light() + 
             theme(title = element_text(size = 7)))
 ```
 
-The `actigraph.sleepr` package implements three sleep detection algorithms: Sadeh (Sadeh, Sharkey, and Carskadon 1994), Cole-Kripke (Cole et al. 1992) and Tudor-Locke (Tudor-Locke et al. 2014). For illustration, let's use GT3X+ / ActiSleep+ sample data taken from ActiGraph's [online documentation](https://actigraph.desk.com).
+The `actigraphr` package implements three sleep detection algorithms: Sadeh (Sadeh, Sharkey, and Carskadon 1994), Cole-Kripke (Cole et al. 1992) and Tudor-Locke (Tudor-Locke et al. 2014). For illustration, let's use GT3X+ / ActiSleep+ sample data taken from ActiGraph's [online documentation](https://actigraph.desk.com).
 
 ```{r }
 file_10s <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                        package = "actigraph.sleepr")
+                        package = "actigraphr")
 ```
 
 ### Read AGD file(s)
@@ -91,7 +91,7 @@ library("tools")
 library("purrr")
 
 # Construct a path to the directory which contains the raw AGD files
-path_in <- system.file("extdata", package = "actigraph.sleepr")
+path_in <- system.file("extdata", package = "actigraphr")
 # And a path to the directory to contain the processed CSV files
 path_out <- path.expand("~")
 

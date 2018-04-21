@@ -1,4 +1,4 @@
 library(testthat)
-library(actigraph.sleepr)
+library(actigraphr)
 
-test_check("actigraph.sleepr")
+test_check("actigraphr")
