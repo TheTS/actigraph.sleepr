@@ -4,7 +4,7 @@
 \alias{expand_timestamp}
 \title{Expand a time period into a vector of equally spaced time points}
 \usage{
-expand_timestamp(start, end, units = "1 min")
+expand_timestamp(start, end, units)
 }
 \arguments{
 \item{start}{The start time, as a POSIXct object.}

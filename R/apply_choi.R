@@ -31,8 +31,17 @@ apply_choi <- function(agdb,
   check_args_nonwear_periods(agdb, "Choi", use_magnitude)
   stopifnot(min_window_len >= spike_tolerance)
 
+  epoch_len <- attr(agdb, "epochlength")
+
+  if (epoch_len != 60) {
+    collapse_factor <- (60 / epoch_len)
+    min_period_len <- min_period_len * collapse_factor
+    min_window_len <- min_window_len / collapse_factor
+    spike_tolerance <- spike_tolerance * collapse_factor
+  }
+
   nonwear <- agdb %>%
-    do(apply_choi_(.data, min_period_len, min_window_len,
+    do(apply_choi_(.data, epoch_len, min_period_len, min_window_len,
                    spike_tolerance, use_magnitude))
   nonwear <-
     structure(nonwear,
@@ -50,6 +59,7 @@ apply_choi <- function(agdb,
 }
 
 apply_choi_ <- function(data,
+                        epoch_len,
                         min_period_len,
                         min_window_len,
                         spike_tolerance,
@@ -84,7 +94,6 @@ apply_choi_ <- function(data,
            length >= min_period_len # | row_number() %in% c(1, n())
            ) %>%
     rename(period_start = timestamp) %>%
-    mutate(period_end = period_start +
-             duration(length, "mins")) %>%
+    mutate(period_end = period_start + seconds(length * epoch_len)) %>%
     select(period_start, period_end, length)
 }

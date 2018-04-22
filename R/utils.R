@@ -44,7 +44,7 @@ complement_periods <- function(periods, epochs, start_var, end_var) {
 #' end <- as.POSIXct("2017-01-01 01:00:00")
 #' expand_timestamp(start, end, "15 mins")
 #' @export
-expand_timestamp <- function(start, end, units = "1 min") {
+expand_timestamp <- function(start, end, units) {
   stopifnot(is.POSIXct(start), is.POSIXct(end))
   time <- seq(start, end, by = units)
   time[-length(time)]
@@ -62,14 +62,14 @@ expand_timestamp <- function(start, end, units = "1 min") {
 #'   apply_choi(min_period_len = 45) %>%
 #'   expand_periods(period_start, period_end, units = "30 mins")
 #' @export
-expand_periods <- function(periods, start_var, end_var, units = "1 min") {
+expand_periods <- function(periods, start_var, end_var, units) {
   start_var <- enquo(start_var)
   end_var <- enquo(end_var)
   periods %>%
     do(expand_periods_(.data, !!start_var, !!end_var, units))
 }
 
-expand_periods_ <- function(periods, start_var, end_var, units = "1 min") {
+expand_periods_ <- function(periods, start_var, end_var, units) {
   start_var <- enquo(start_var)
   end_var <- enquo(end_var)
   periods %>%

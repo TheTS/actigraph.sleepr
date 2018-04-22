@@ -37,17 +37,35 @@ apply_troiano <- function(agdb,
 
   check_args_nonwear_periods(agdb, "Troiano", use_magnitude)
 
+  #check what happens in Actlife for epoch > 60
+  epoch_len <- attr(agdb, "epochlength")
+
+  if (epoch_len != 60) {
+    collapse_factor <- (60 / epoch_len)
+    activity_threshold <- activity_threshold / collapse_factor
+    min_period_len <- min_period_len * collapse_factor
+    max_nonzero_count <- max_nonzero_count / collapse_factor
+    spike_tolerance <- spike_tolerance * collapse_factor
+    spike_stoplevel <- spike_stoplevel / collapse_factor
+  }
+
   if (endat_nnz_seq)
     nonwear <- agdb %>%
-      do(apply_troiano_seq_(.data, activity_threshold,
-                            min_period_len, max_nonzero_count,
+      do(apply_troiano_seq_(.data,
+                            epoch_len,
+                            activity_threshold,
+                            min_period_len,
+                            max_nonzero_count,
                             spike_tolerance,
                             spike_stoplevel,
                             use_magnitude))
   else
     nonwear <- agdb %>%
-      do(apply_troiano_nonseq_(.data, activity_threshold,
-                               min_period_len, max_nonzero_count,
+      do(apply_troiano_nonseq_(.data,
+                               epoch_len,
+                               activity_threshold,
+                               min_period_len,
+                               max_nonzero_count,
                                spike_tolerance,
                                spike_stoplevel,
                                use_magnitude))
@@ -70,6 +88,7 @@ apply_troiano <- function(agdb,
 }
 
 apply_troiano_seq_ <- function(data,
+                               epoch_len,
                                activity_threshold,
                                min_period_len, max_nonzero_count,
                                spike_tolerance,
@@ -79,7 +98,7 @@ apply_troiano_seq_ <- function(data,
     add_magnitude() %>%
     mutate(count = if (use_magnitude) magnitude else axis1,
            wear = if_else(count <= activity_threshold |
-                            count > max_nonzero_count, 0L, 1L),
+                          count > max_nonzero_count, 0L, 1L),
            wear = if_else(count > spike_stoplevel, 2L, wear)) %>%
     group_by(rleid = rleid(wear)) %>%
     summarise(wear = first(wear),
@@ -100,11 +119,12 @@ apply_troiano_seq_ <- function(data,
     filter(wear == 0L,
            length >= min_period_len) %>%
     rename(period_start = timestamp) %>%
-    mutate(period_end = period_start + duration(length, "mins")) %>%
+    mutate(period_end = period_start + seconds(length * epoch_len)) %>%
     select(period_start, period_end, length)
 }
 
 apply_troiano_nonseq_ <- function(data,
+                                  epoch_len,
                                   activity_threshold,
                                   min_period_len, max_nonzero_count,
                                   spike_tolerance,
@@ -119,9 +139,9 @@ apply_troiano_nonseq_ <- function(data,
     filter(length >= min_period_len) %>%
     rename(period_start = timestamp) %>%
     select(period_start, length) %>%
-    mutate(period_end = period_start + duration(length, "mins")) %>%
-    mutate(a = time_length(period_start - first(period_start), "min"),
-           b = time_length(period_end - first(period_start), "min")) %>%
+    mutate(period_end = period_start + seconds(length * epoch_len)) %>%
+    mutate(a = time_length(period_start - first(period_start), "second"),
+           b = time_length(period_end - first(period_start), "second")) %>%
     # Remove periods which overlap with previous periods
     filter(overlap(a, b)) %>%
     select(period_start, period_end, length)

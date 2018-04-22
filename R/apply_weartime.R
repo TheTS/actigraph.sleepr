@@ -20,7 +20,6 @@
 #' @export
 apply_weartime <- function(agdb, fun = apply_troiano, ...){
   non_wear <- agdb %>%
-    collapse_epochs(60) %>%
     fun(...)
 
   agdb %>%

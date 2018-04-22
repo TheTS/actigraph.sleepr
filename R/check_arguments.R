@@ -39,7 +39,7 @@ check_args_sleep_periods <- function(agdb, algorithm) {
 check_args_nonwear_periods <- function(agdb, algorithm,
                                        use_magnitude) {
   if (attr(agdb, "epochlength") != 60)
-    cat("Warning: epochlength is not 60")
+    cat("Warning: epochlength is not 60 (nonwear algorithms were designed for epochlength 60)\n")
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, "axis1")
   if (use_magnitude) {
