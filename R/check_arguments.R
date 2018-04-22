@@ -53,11 +53,8 @@ check_args_filter <- function(agdb, var) {
   check_no_missing_counts(agdb, var)
 }
 check_args_collapse_method <- function(agdb, epoch_len_out) {
-  if (epoch_len_out != 60)
-    stop("Use `collapse_epochs` to aggregate to 60s epochs.")
   if (epoch_len_out %% attr(agdb, "epochlength"))
-    stop("Output epoch length is not an exact multiple ",
-         "of input epoch length.")
+    stop("Output epoch length is not an exact multiple of input epoch length.")
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, "axis1")
 }

@@ -27,22 +27,25 @@ The `actigraphr` package is used to analyse accelerometer data obtaiend from Act
 
 This package is an extension of the [`actigraph.sleepr`](https://github.com/dipetkov/actigraph.sleepr) package, written by Desislava Petkova.
 
-Non-wear detection algorithms
-* Troiano [@Troiano:2008aa]
-* Choi [@Choi:2011aa]
+Non-wear detection algorithms:
 
-Sleep scoring algorithms
-* Sadeh [@Sadeh:1994aa]
-* Cole-Kripke [@Cole:1992aa]
-* Tudor-Locke [@Tudor-Locke:2014aa]
+  * Troiano [@Troiano:2008aa]
+  * Choi [@Choi:2011aa]
+  
+Sleep scoring algorithms:
 
-Physical activity thresholds
-* Freedson adult [@Freedson:1998aa]
-* Freedson adult VM [@Freedson:2011aa]
-* Freedson children [@Freedson:2005aa]
-* Evenson children [@Evenson:2008aa]
-* Mattocks  children [@Mattocks:2007aa]
-* Puyau children [@Puyau:2002aa]
+  * Sadeh [@Sadeh:1994aa]
+  * Cole-Kripke [@Cole:1992aa]
+  * Tudor-Locke [@Tudor-Locke:2014aa]
+  
+Physical activity thresholds:
+
+  * Freedson adult [@Freedson:1998aa]
+  * Freedson adult VM [@Freedson:2011aa]
+  * Freedson children [@Freedson:2005aa]
+  * Evenson children [@Evenson:2008aa]
+  * Mattocks  children [@Mattocks:2007aa]
+  * Puyau children [@Puyau:2002aa]
 
 
 ### Installation
