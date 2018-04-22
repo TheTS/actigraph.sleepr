@@ -11,7 +11,7 @@ apply_weartime(agdb, fun = apply_troiano, ...)
 
 \item{fun}{The weartime function to employ (either \code{apply_troiano} or \code{apply_choi}). The default is \code{apply_troiano}.}
 
-\item{...}{Additional parameters passed to the weartime function if the default parameters are not suitable.}
+\item{...}{Additional arguments passed to the weartime function if the default arguments are not suitable.}
 }
 \value{
 The input \code{tibble} of activity data with an additional \emph{'wear'} column.

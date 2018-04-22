@@ -18,5 +18,3 @@
 #' @importFrom lubridate duration ymd_hms time_length is.POSIXct floor_date wday seconds
 #' @importFrom stringr str_replace
 NULL
-
-globalVariables(".")

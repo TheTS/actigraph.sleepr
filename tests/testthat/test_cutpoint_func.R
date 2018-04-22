@@ -4,24 +4,24 @@ library("readr")
 library("dplyr")
 
 context("Activity scoring with cutpoints")
-test_that("apply_cutpoints returns same result as ActiLife 6", {
+test_that("apply_cutpoints returns same result as ActiLife 6 - 10s epoch", {
 
   check_cutpoint <- function(cutpoints, agd){
 
-    csv_file <- system.file("extdata", paste("GT3XPlus-RawData-Day01-",
-                                             cutpoints, "-summary.csv", sep = ""),
-                            package = "actigraphr")
-
-    agdb_10s <- read_agd(agd_file) %>%
+    agdb_10s <- read_agd(agd) %>%
       apply_cutpoints(cutpoints)
 
     len <- length(attr(agdb_10s, "intensity_categories"))
-    actilife <- read_csv(csv_file)
+    actilife <- read_csv(csv_file) %>%
+      filter(Epoch == 10 & Cutpoints == cutpoints)
     actilife <- unname(unlist(actilife[1, 7:(7 + len - 1)]))
     agdb_10s <- as.vector(table(agdb_10s$activity) / 6)
 
     expect_equal(actilife, agdb_10s)
   }
+
+  csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-Cutpoints.csv",
+                          package = "actigraphr")
 
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
                           package = "actigraphr")
@@ -33,28 +33,81 @@ test_that("apply_cutpoints returns same result as ActiLife 6", {
   check_cutpoint("mattocks_children", agd_file)
   check_cutpoint("puyau_children", agd_file)
 })
-test_that("apply_cutpoints with non-wear removed returns same result as ActiLife 6", {
+test_that("apply_cutpoints returns same result as ActiLife 6 - 30s and 60s epoch", {
 
-  csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-evenson_children_nwr-summary.csv",
+  check_cutpoint <- function(cutpoints, agd, epoch){
+
+    agdb_10s <- read_agd(agd) %>%
+      collapse_epochs(epoch) %>%
+      apply_cutpoints(cutpoints)
+
+    len <- length(attr(agdb_10s, "intensity_categories"))
+    actilife <- read_csv(csv_file) %>%
+      filter(Epoch == epoch & Cutpoints == cutpoints & is.na(Nonwear_algorithm))
+    actilife <- unname(unlist(actilife[1, 7:(7 + len - 1)]))
+    agdb_10s <- as.vector(table(agdb_10s$activity) / (60 / epoch))
+
+    expect_equal(actilife, agdb_10s)
+  }
+
+  csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-Cutpoints.csv",
                           package = "actigraphr")
 
   agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
                           package = "actigraphr")
 
-  agdb <- read_agd(agd_file) %>%
-    collapse_epochs(60) %>%
-    apply_weartime() %>%
-    apply_cutpoints("evenson_children") %>%
-    filter(wear > 0)
+  check_cutpoint("evenson_children", agd_file, 30)
+  check_cutpoint("evenson_children", agd_file, 60)
+})
+test_that("apply_cutpoints with non-wear removed returns same result as ActiLife 6", {
 
-  len <- length(attr(agdb, "intensity_categories"))
+  check_cutpoint <- function(agd, epoch, algorithm){
 
-  agdb <- as.vector(table(agdb$activity))
+    agdb_10s <- read_agd(agd) %>%
+      collapse_epochs(epoch)
 
-  actilife <- read_csv(csv_file)
-  actilife <- unname(unlist(actilife[1, 7:(7 + len - 1)]))
+    if (algorithm == "troiano") {
+      agdb_10s <- agdb_10s %>% apply_weartime()
+    } else {
+      agdb_10s <- agdb_10s %>% apply_weartime(apply_choi)
+    }
 
-  expect_equal(actilife, agdb)
+    agdb_10s <- agdb_10s %>%
+      apply_cutpoints("evenson_children") %>%
+      filter(wear == 1)
+
+    len <- length(attr(agdb_10s, "intensity_categories"))
+    actilife <- read_csv(csv_file) %>%
+      filter(Epoch == epoch &
+             Cutpoints == "evenson_children" &
+             Nonwear_algorithm == algorithm)
+    actilife <- unname(unlist(actilife[1, 7:(7 + len - 1)]))
+    agdb_10s <- as.vector(table(agdb_10s$activity) / (60 / epoch))
+
+    expect_equal(actilife, agdb_10s)
+  }
+
+
+  csv_file <- system.file("extdata", "GT3XPlus-RawData-Day01-Cutpoints.csv",
+                          package = "actigraphr")
+
+  agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
+                          package = "actigraphr")
+
+  for (epoch in c(10, 30, 60)) {
+    for (algorithm in c("troiano", "choi")) {
+
+      check_cutpoint(agd_file, epoch, algorithm)
+
+    }
+  }
+})
+test_that("apply_cutpoints returns same result as ActiLife 6 - custom cutpoints", {
+
+  # Odd number of categories
+
+  # Custom list format check
+
 })
 
 context("Activity summary with weartime filter")

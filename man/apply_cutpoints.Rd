@@ -14,7 +14,7 @@ apply_cutpoints(agdb, cutpoints, use_magnitude = FALSE,
 
 \item{use_magnitude}{Logical. If true, the vector magnitude is used to measure activity intensity; otherwise the axis1 value is used. The default is \code{FALSE}. Note that several predifined cutpoints will override the default (e.g. 'freedson_adult_vm').}
 
-\item{custom_cutpoints}{A list of custom cutpoints. This must be a list containing two vectors. The first contains count threshold ranges (must be an even number), and the second contains a list of category names. These names are used as column names when using \code{\link{summarise_agd}}.See below for an example.}
+\item{custom_cutpoints}{A list of custom cutpoints. This must be a list containing two vectors. The first contains count threshold ranges (must be an even number), and the second contains a list of category names. These names are used as column names when using \code{\link{summarise_agd}}. See below for an example.}
 }
 \value{
 The input \code{tibble} of activity data with an additional \emph{'activity'} column. The cutpoint information is appended to the tibble attributes.
@@ -23,7 +23,7 @@ The input \code{tibble} of activity data with an additional \emph{'activity'} co
 Each epoch is assigned to an intensity category based on a set of "cutpoints".
 }
 \details{
-All cutpoint values must be at the counts-per-minute (CPM) scale (60 sec epoch). However, you can still apply a set of cutpoints to data that has an \code{epochlength} of less that 60 seconds (the function adjusts the CPM values based on the \code{epochlength} attribute). The six sets of predefined cutpoints are:
+All cutpoint values must be at the counts-per-minute (CPM) scale (60 second epoch). However, you can still apply a set of cutpoints to data that has an \code{epochlength} of less that 60 seconds (the function adjusts the CPM values based on the \code{epochlength} attribute). The six sets of predefined cutpoints are:
 \itemize{\item freedson_adult (1998)
          \item freedson_adult_vm (2011)
          \item freedson_children (2005)

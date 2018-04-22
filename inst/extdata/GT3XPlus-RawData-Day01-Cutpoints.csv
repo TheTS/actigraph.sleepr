@@ -1,0 +1,15 @@
+Subject,Filename,Epoch,Weight (kg),Age,Gender,Sedentary,Light,Moderate,Vigorous,Very Vigorous,Steps Counts,Cutpoints,Nonwear_algorithm
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1310,125.3333333,18.5,46,,6220,evenson_children,NA
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1415.333333,36.16666667,19,29.33333333,,6220,freedson_adult_vm,NA
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1310,120.6666667,37.66666667,24.5,7,6220,freedson_adult,NA
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1324.5,51.16666667,78.16666667,28.33333333,17.66666667,6220,freedson_children,NA
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1310,141.1666667,19,29.66666667,,6220,mattocks_children,NA
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1396.166667,50.33333333,39,14.33333333,,6220,puyau_children,NA
+GT3XPlus,GT3XPlus-RawData-Day0160sec.agd,60,69,43,M,1191,229,64,16,,6220,evenson_children,NA
+GT3XPlus,GT3XPlus-RawData-Day0130sec.agd,30,69,43,M,1238.5,181,43,37.5,,6220,evenson_children,NA
+GT3XPlus,GT3XPlus-RawData-Day0160sec.agd,60,69,43,M,866,229,64,16,,6210,evenson_children,troiano
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1087.833333,125.3333333,18.5,46,,6220,evenson_children,troiano
+GT3XPlus,GT3XPlus-RawData-Day0130sec.agd,30,69,43,M,1007,181,43,37.5,,6219,evenson_children,troiano
+GT3XPlus,GT3XPlus-RawData-Day0160sec.agd,60,69,43,M,1034,229,64,16,,6220,evenson_children,choi
+GT3XPlus,GT3XPlus-RawData-Day01.agd,10,69,43,M,1153,125.3333333,18.5,46,,6220,evenson_children,choi
+GT3XPlus,GT3XPlus-RawData-Day0130sec.agd,30,69,43,M,1081.5,181,43,37.5,,6220,evenson_children,choi

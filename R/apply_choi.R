@@ -1,14 +1,14 @@
 #' Apply the Choi algorithm
 #'
-#' The Choi algorithm detects periods of non-wear in activity data from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis.
-#' @param agdb A \code{tibble} (\code{tbl}) of activity data (at least) an \code{epochlength} attribute. The epoch length must be 60 seconds.
+#' The Choi algorithm detects periods of non-wear from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis.
+#' @param agdb A \code{tibble} (\code{tbl}) of activity data with an \code{epochlength} attribute.
 #' @inheritParams apply_troiano
 #' @param min_period_len Minimum number of consecutive "zero" epochs to start a non-wear period. The default is 90.
 #' @param min_window_len The minimum number of consecutive "zero" epochs immediately preceding and following a spike of artifactual movement. The default is 30.
 #' @details
 #' The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by \code{min_window_len} consecutive "zero" epochs.
 #'
-#' This implementation of the algorithm expects that the epochs are 60 second long.
+#' The Choi algorithm is designed for an epoch length of 60 seconds. As such, this function collapses data to a 60 second epoch if required. Epoch lengths greater than 60s are not supported.
 #' @return A summary \code{tibble} of the detected non-wear periods. If the activity data is grouped, then non-wear periods are detected separately for each group.
 #' @references L Choi, Z Liu, CE Matthews and MS Buchowski. Validation of accelerometer wear and nonwear time classification algorithm. \emph{Medicine & Science in Sports & Exercise}, 43(2):357–364, 2011.
 #' @references ActiLife 6 User's Manual by the ActiGraph Software Department. 04/03/2012.
@@ -18,7 +18,6 @@
 #' data("gtxplus1day")
 #'
 #' gtxplus1day %>%
-#'   collapse_epochs(60) %>%
 #'   apply_choi()
 #' @export
 
@@ -31,17 +30,14 @@ apply_choi <- function(agdb,
   check_args_nonwear_periods(agdb, "Choi", use_magnitude)
   stopifnot(min_window_len >= spike_tolerance)
 
-  epoch_len <- attr(agdb, "epochlength")
-
-  if (epoch_len != 60) {
-    collapse_factor <- (60 / epoch_len)
-    min_period_len <- min_period_len * collapse_factor
-    min_window_len <- min_window_len / collapse_factor
-    spike_tolerance <- spike_tolerance * collapse_factor
+  # Collapse to 60 sec epoch if smaller
+  # Choi is only designed for 60, and Actilife also collapses
+  if (attr(agdb, "epochlength") != 60) {
+    agdb <- agdb %>% collapse_epochs(60)
   }
 
   nonwear <- agdb %>%
-    do(apply_choi_(.data, epoch_len, min_period_len, min_window_len,
+    do(apply_choi_(.data, min_period_len, min_window_len,
                    spike_tolerance, use_magnitude))
   nonwear <-
     structure(nonwear,
@@ -59,7 +55,6 @@ apply_choi <- function(agdb,
 }
 
 apply_choi_ <- function(data,
-                        epoch_len,
                         min_period_len,
                         min_window_len,
                         spike_tolerance,
@@ -94,6 +89,6 @@ apply_choi_ <- function(data,
            length >= min_period_len # | row_number() %in% c(1, n())
            ) %>%
     rename(period_start = timestamp) %>%
-    mutate(period_end = period_start + seconds(length * epoch_len)) %>%
+    mutate(period_end = period_start + duration(length, "mins")) %>%
     select(period_start, period_end, length)
 }

@@ -3,14 +3,6 @@ library("actigraphr")
 library("dplyr")
 library("readr")
 
-context("General tests")
-if (requireNamespace("lintr", quietly = TRUE)) {
-  context("lints")
-  test_that("Package Style", {
-    lintr::expect_lint_free()
-  })
-}
-
 context("Read agd files")
 test_that("read_agd returns a tbl_agd", {
   file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
@@ -77,3 +69,46 @@ test_that("collapse_epochs errors if unexpected epoch length", {
                         data_frame(epochlength = 9))
   expect_error(collapse_epochs(dummy_agdb, 60))
 })
+
+context("Impute missing epochs")
+test_that("impute missing epochs", {
+  file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
+                      package = "actigraphr")
+  agdb <- read_agd(file)
+
+  agdb$axis1[3:7] <- NA
+
+  expect_equal(is.na(sum(agdb$axis1)), TRUE)
+
+  agdb <- agdb %>%
+    impute_epochs(axis1)
+
+  expect_equal(is.na(sum(agdb$axis1)), FALSE)
+})
+
+context("Test tbl_agd dplyr features")
+test_that("Test tbl_agd dplyr verbs", {
+
+  #mutate, rename, select, filter, summarise, group_by
+  #ungroup, do, arrange
+
+})
+test_that("Test tbl_agd dplyr joins", {
+
+  #inner, left, right, full, semi, anti
+
+})
+
+context("Test tbl_period dplyr features")
+test_that("Test tbl_period dplyr verbs", {
+
+  #mutate, rename, select, filter, summarise, group_by
+  #ungroup, do, arrange
+
+})
+test_that("Test tbl_period dplyr joins", {
+
+  #inner, left, right, full, semi, anti
+
+})
+

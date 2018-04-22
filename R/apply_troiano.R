@@ -1,7 +1,7 @@
 #' Apply the Troiano algorithm
 #'
-#' The Troiano algorithm detects periods of non-wear in activity data from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis. The algorithm formalizes a technique used to analyze the 2003-2004 NHANES data; the original SAS source code can be found at \url{http://riskfactor.cancer.gov/tools/nhanes_pam/}.
-#' @param agdb A \code{tibble} (\code{tbl}) of activity data (at least) an \code{epochlength} attribute. The epoch length must be 60 seconds.
+#' The Troiano algorithm detects periods of non-wear from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis. The algorithm formalizes a technique used to analyze the 2003-2004 NHANES data; the original SAS source code can be found at \url{http://riskfactor.cancer.gov/tools/nhanes_pam/}.
+#' @param agdb A \code{tibble} (\code{tbl}) of activity data (at least) an \code{epochlength} attribute.
 #' @param activity_threshold Highest activity level to be considered "zero"; an epoch with activity exceeding the threshold is considered a "spike". The default threshold is 0.
 #' @param min_period_len Minimum number of consecutive "zero" epoch to start a non-wear period. The default is 60.
 #' @param max_nonzero_count Epochs with activity greater than \code{max_nonzero_count} are labeled as "zero". The default is Inf.
@@ -12,7 +12,7 @@
 #' @details
 #' The Troiano algorithm specifies that a non-wear period starts with \code{min_period_len} consecutive epochs/minutes of "zero" activity and ends with more than \code{spike_tolerance} epochs/minutes of "nonzero" activity.
 #'
-#' This implementation of the algorithm expects 60s epochs.
+#' This algorithm is designed for epoch lengths of 60s or less.
 #' @return A summary \code{tibble} of the detected non-wear periods. If the activity data is grouped, then non-wear periods are detected separately for each group.
 #' @references RP Troiano, D Berrigan, KW Dodd, LC Mâsse, T Tilert and M McDowell. Physical activity in the united states measured by accelerometer. \emph{Medicine & Science in Sports & Exercise}, 40(1):181–188, 2008.
 #' @references ActiLife 6 User's Manual by the ActiGraph Software Department. 04/03/2012.
@@ -20,6 +20,9 @@
 #' @examples
 #' library("dplyr")
 #' data("gtxplus1day")
+#'
+#' gtxplus1day %>%
+#'   apply_troiano()
 #'
 #' gtxplus1day %>%
 #'   collapse_epochs(60) %>%
@@ -37,7 +40,7 @@ apply_troiano <- function(agdb,
 
   check_args_nonwear_periods(agdb, "Troiano", use_magnitude)
 
-  #check what happens in Actlife for epoch > 60
+  # TODO check these attributes with different epochs
   epoch_len <- attr(agdb, "epochlength")
 
   if (epoch_len != 60) {

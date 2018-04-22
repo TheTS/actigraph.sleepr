@@ -20,7 +20,7 @@ test_that("apply_troiano return same result as ActiLife 6", {
     system.file("extdata", "GT3XPlus-RawData-Day01-Troiano-periods.csv",
                 package = "actigraphr")
   join_vars <- c("period_start", "period_end", "length")
-  actilife <- read_csv(csv_file)
+  actilife <- read_csv(csv_file) %>% filter(epoch == 60)
   epochs <- read_agd(agd_file) %>% collapse_epochs(60)
   params <- actilife %>% select(min_period_len, max_nonzero_count,
                                 spike_tolerance, spike_stoplevel,
@@ -108,3 +108,16 @@ test_that("apply_choi return same result as ActiLife 6", {
       actisleepr_periods
     })
 })
+test_that("apply_troiano (VM) return same result as ActiLife 6", {
+
+  # troiano using VM
+})
+test_that("apply_choi (VM) return same result as ActiLife 6", {
+
+  # choi using VM
+})
+test_that("complement_periods returns correct periods", {
+
+  # complement_periods()
+})
+

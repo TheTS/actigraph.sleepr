@@ -9,7 +9,7 @@ apply_troiano(agdb, activity_threshold = 0, min_period_len = 60,
   use_magnitude = FALSE, endat_nnz_seq = TRUE)
 }
 \arguments{
-\item{agdb}{A \code{tibble} (\code{tbl}) of activity data (at least) an \code{epochlength} attribute. The epoch length must be 60 seconds.}
+\item{agdb}{A \code{tibble} (\code{tbl}) of activity data (at least) an \code{epochlength} attribute.}
 
 \item{activity_threshold}{Highest activity level to be considered "zero"; an epoch with activity exceeding the threshold is considered a "spike". The default threshold is 0.}
 
@@ -29,16 +29,19 @@ apply_troiano(agdb, activity_threshold = 0, min_period_len = 60,
 A summary \code{tibble} of the detected non-wear periods. If the activity data is grouped, then non-wear periods are detected separately for each group.
 }
 \description{
-The Troiano algorithm detects periods of non-wear in activity data from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis. The algorithm formalizes a technique used to analyze the 2003-2004 NHANES data; the original SAS source code can be found at \url{http://riskfactor.cancer.gov/tools/nhanes_pam/}.
+The Troiano algorithm detects periods of non-wear from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis. The algorithm formalizes a technique used to analyze the 2003-2004 NHANES data; the original SAS source code can be found at \url{http://riskfactor.cancer.gov/tools/nhanes_pam/}.
 }
 \details{
 The Troiano algorithm specifies that a non-wear period starts with \code{min_period_len} consecutive epochs/minutes of "zero" activity and ends with more than \code{spike_tolerance} epochs/minutes of "nonzero" activity.
 
-This implementation of the algorithm expects 60s epochs.
+This algorithm is designed for epoch lengths of 60s or less.
 }
 \examples{
 library("dplyr")
 data("gtxplus1day")
+
+gtxplus1day \%>\%
+  apply_troiano()
 
 gtxplus1day \%>\%
   collapse_epochs(60) \%>\%

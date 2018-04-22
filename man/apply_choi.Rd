@@ -8,7 +8,7 @@ apply_choi(agdb, min_period_len = 90, min_window_len = 30,
   spike_tolerance = 2, use_magnitude = FALSE)
 }
 \arguments{
-\item{agdb}{A \code{tibble} (\code{tbl}) of activity data (at least) an \code{epochlength} attribute. The epoch length must be 60 seconds.}
+\item{agdb}{A \code{tibble} (\code{tbl}) of activity data with an \code{epochlength} attribute.}
 
 \item{min_period_len}{Minimum number of consecutive "zero" epochs to start a non-wear period. The default is 90.}
 
@@ -22,19 +22,18 @@ apply_choi(agdb, min_period_len = 90, min_window_len = 30,
 A summary \code{tibble} of the detected non-wear periods. If the activity data is grouped, then non-wear periods are detected separately for each group.
 }
 \description{
-The Choi algorithm detects periods of non-wear in activity data from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis.
+The Choi algorithm detects periods of non-wear from an ActiGraph device. Such intervals are likely to represent invalid data and therefore should be excluded from downstream analysis.
 }
 \details{
 The Choi algorithm extends the Troiano algorithm by requiring that short spikes of artifactual movement during a non-wear period are preceded and followed by \code{min_window_len} consecutive "zero" epochs.
 
-This implementation of the algorithm expects that the epochs are 60 second long.
+The Choi algorithm is designed for an epoch length of 60 seconds. As such, this function collapses data to a 60 second epoch if required. Epoch lengths greater than 60s are not supported.
 }
 \examples{
 library("dplyr")
 data("gtxplus1day")
 
 gtxplus1day \%>\%
-  collapse_epochs(60) \%>\%
   apply_choi()
 }
 \references{
