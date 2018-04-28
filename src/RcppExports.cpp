@@ -5,6 +5,18 @@
 
 using namespace Rcpp;
 
+// read_activityC
+NumericVector read_activityC(RawVector bytes, double scale);
+RcppExport SEXP _actigraphr_read_activityC(SEXP bytesSEXP, SEXP scaleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RawVector >::type bytes(bytesSEXP);
+    Rcpp::traits::input_parameter< double >::type scale(scaleSEXP);
+    rcpp_result_gen = Rcpp::wrap(read_activityC(bytes, scale));
+    return rcpp_result_gen;
+END_RCPP
+}
 // wle
 IntegerVector wle(NumericVector counts, int activity_threshold, int spike_tolerance, int spike_stoplevel);
 RcppExport SEXP _actigraphr_wle(SEXP countsSEXP, SEXP activity_thresholdSEXP, SEXP spike_toleranceSEXP, SEXP spike_stoplevelSEXP) {
@@ -33,6 +45,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_actigraphr_read_activityC", (DL_FUNC) &_actigraphr_read_activityC, 2},
     {"_actigraphr_wle", (DL_FUNC) &_actigraphr_wle, 4},
     {"_actigraphr_overlap", (DL_FUNC) &_actigraphr_overlap, 2},
     {NULL, NULL, 0}
