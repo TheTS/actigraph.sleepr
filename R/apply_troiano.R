@@ -54,7 +54,7 @@ apply_troiano <- function(agdb,
 
   if (endat_nnz_seq)
     nonwear <- agdb %>%
-      do(apply_troiano_seq_(.data,
+      do(apply_troiano_seq_(.,
                             epoch_len,
                             activity_threshold,
                             min_period_len,
@@ -64,7 +64,7 @@ apply_troiano <- function(agdb,
                             use_magnitude))
   else
     nonwear <- agdb %>%
-      do(apply_troiano_nonseq_(.data,
+      do(apply_troiano_nonseq_(.,
                                epoch_len,
                                activity_threshold,
                                min_period_len,

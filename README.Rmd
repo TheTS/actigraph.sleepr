@@ -5,12 +5,9 @@ output:
 bibliography: actigraph.bib
 ---
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraph.sleepr)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/actigraph.sleepr)](https://cran.r-project.org/package=actigraph.sleepr)
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.4-6666ff.svg)](https://cran.r-project.org/)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0-orange.svg?style=flat-square)](commits/master)
+[![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraphr)
 [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master)
-[![codecov](https://codecov.io/gh/TheTS/actigraph.sleepr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraph.sleepr)
+[![codecov](https://codecov.io/gh/TheTS/actigraphr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraphr)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -24,7 +21,7 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 The `actigraphr` package is used to analyse accelerometer data obtaiend from ActiGraph devices. It includes several non-wear, sleep, and physical activity detection algorithms. 
 
-This package is an extension of the [`actigraph.sleepr`](https://github.com/dipetkov/actigraph.sleepr) package, written by Desislava Petkova.
+This package extends the [`actigraph.sleepr`](https://github.com/dipetkov/actigraph.sleepr) package, written by Desislava Petkova.
 
 Non-wear detection algorithms:
 
@@ -56,6 +53,53 @@ install_github("TheTS/actigraphr")
 
 ### Examples
 
-Documentation is on its way!
+`actigraphr` supports reading AGD files and raw gt3x files that are exported from the Actilife software.
+
+```{r include=FALSE}
+library(actigraphr)
+
+agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
+                        package = "actigraphr")
+
+agdb <- read_agd(agd_file)
+```
+
+When an AGD file is read, the information about the device settings are saved as attributes:
+
+```{r}
+str(agdb)
+```
+
+This file can then be processed using the dplyr pipe syntax. This snippet collapses the data to 30 second epochs, before adding weartime and physicay activity intensity columns:
+
+```{r}
+scored <- agdb %>% 
+  collapse_epochs(60) %>% 
+  apply_weartime(fun = apply_troiano) %>% 
+  apply_cutpoints(cutpoints = "evenson_children") 
+```
+
+```{r eval=FALSE}
+head(scored, 5)
+```
+
+```{r echo=FALSE}
+knitr::kable(head(scored, 5))
+```
+
+Summarising this data over a specified time interval (e.g. daily, hourly) is as simple as:
+
+```{r}
+summary <- scored %>% 
+  summarise_agd(time = "1 hour")
+```
+
+And this summary information can then be plotted:
+
+```{r, fig.width=8, fig.height=4}
+plot_activity_summary(summary)
+```
+
+*More documentation and vignettes to come!*
 
 ### References

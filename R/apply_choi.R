@@ -37,7 +37,7 @@ apply_choi <- function(agdb,
   }
 
   nonwear <- agdb %>%
-    do(apply_choi_(.data, min_period_len, min_window_len,
+    do(apply_choi_(., min_period_len, min_window_len,
                    spike_tolerance, use_magnitude))
   nonwear <-
     structure(nonwear,

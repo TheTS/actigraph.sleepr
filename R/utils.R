@@ -66,7 +66,7 @@ expand_periods <- function(periods, start_var, end_var, units) {
   start_var <- enquo(start_var)
   end_var <- enquo(end_var)
   periods %>%
-    do(expand_periods_(.data, !!start_var, !!end_var, units))
+    do(expand_periods_(., !!start_var, !!end_var, units))
 }
 
 expand_periods_ <- function(periods, start_var, end_var, units) {
