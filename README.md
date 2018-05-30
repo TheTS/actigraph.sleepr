@@ -1,4 +1,4 @@
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraph.sleepr.svg?branch=master)](https://travis-ci.org/TheTS/actigraphr) [![Last-changedate](https://img.shields.io/badge/last%20change-2018--05--30-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/TheTS/actigraphr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraphr)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Travis-CI Build Status](https://travis-ci.org/TheTS/actigraphr.svg?branch=master)](https://travis-ci.org/TheTS/actigraphr) [![Last-changedate](https://img.shields.io/badge/last%20change-2018--05--30-yellowgreen.svg)](/commits/master) [![codecov](https://codecov.io/gh/TheTS/actigraphr/branch/master/graph/badge.svg)](https://codecov.io/gh/TheTS/actigraphr)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ### actigraphr: Non-wear, sleep, and physical activity analysis from ActiGraph data
@@ -98,16 +98,15 @@ scored <- agdb %>%
 ```
 
 ``` r
-head(scored, 5)
+#> # A tibble: 5 x 11
+#>   timestamp           axis1 axis2 axis3 steps inclineoff inclinestanding inclinesitting inclinelying  wear activity
+#>   <dttm>              <int> <int> <int> <int>      <int>           <int>          <int>        <int> <int>    <int>
+#> 1 2012-06-27 10:54:00  1465  1791  2572    13          0              40             20            0     1        2
+#> 2 2012-06-27 10:55:00   207   218   270     1          0              10             50            0     1        2
+#> 3 2012-06-27 10:56:00   169   257   270     3          0              11             49            0     1        2
+#> 4 2012-06-27 10:57:00     0     0     0     0          0               0             60            0     1        1
+#> 5 2012-06-27 10:58:00   157   174   248     1          0              10             50            0     1        2
 ```
-
-| timestamp           |  axis1|  axis2|  axis3|  steps|  inclineoff|  inclinestanding|  inclinesitting|  inclinelying|  wear|  activity|
-|:--------------------|------:|------:|------:|------:|-----------:|----------------:|---------------:|-------------:|-----:|---------:|
-| 2012-06-27 10:54:00 |   1465|   1791|   2572|     13|           0|               40|              20|             0|     1|         2|
-| 2012-06-27 10:55:00 |    207|    218|    270|      1|           0|               10|              50|             0|     1|         2|
-| 2012-06-27 10:56:00 |    169|    257|    270|      3|           0|               11|              49|             0|     1|         2|
-| 2012-06-27 10:57:00 |      0|      0|      0|      0|           0|                0|              60|             0|     1|         1|
-| 2012-06-27 10:58:00 |    157|    174|    248|      1|           0|               10|              50|             0|     1|         2|
 
 Summarising this data over a specified time interval (e.g. daily, hourly) is as simple as:
 
@@ -122,7 +121,9 @@ And this summary information can then be plotted:
 plot_activity_summary(summary)
 ```
 
-![](README-unnamed-chunk-9-1.png)
+![](README-unnamed-chunk-8-1.png)
+
+*More documentation and vignettes to come!*
 
 ### References
 
