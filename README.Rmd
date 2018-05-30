@@ -17,6 +17,8 @@ bibliography: actigraph.bib
 knitr::opts_chunk$set(collapse = TRUE, 
                       comment = "#>",
                       fig.path = "README-")
+
+options(width=1000) 
 ```
 
 The `actigraphr` package is used to analyse accelerometer data obtaiend from ActiGraph devices. It includes several non-wear, sleep, and physical activity detection algorithms. 
@@ -55,7 +57,7 @@ install_github("TheTS/actigraphr")
 
 `actigraphr` supports reading AGD files and raw gt3x files that are exported from the Actilife software.
 
-```{r include=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(actigraphr)
 
 agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
@@ -70,7 +72,7 @@ When an AGD file is read, the information about the device settings are saved as
 str(agdb)
 ```
 
-This file can then be processed using the dplyr pipe syntax. This snippet collapses the data to 30 second epochs, before adding weartime and physicay activity intensity columns:
+This file can then be processed using the dplyr pipe syntax. This snippet collapses the data to 30 second epochs, before adding weartime and physical activity intensity columns:
 
 ```{r}
 scored <- agdb %>% 
@@ -79,9 +81,14 @@ scored <- agdb %>%
   apply_cutpoints(cutpoints = "evenson_children") 
 ```
 
-```{r}
+```{r eval=FALSE}
 head(scored, 5)
 ```
+```{r echo=FALSE}
+head(as.data.frame(scored), 5)
+```
+
+
 
 Summarising this data over a specified time interval (e.g. daily, hourly) is as simple as:
 
@@ -96,6 +103,6 @@ And this summary information can then be plotted:
 plot_activity_summary(summary)
 ```
 
-*More documentation and vignettes to come!*
+**More documentation and vignettes to come!**
 
 ### References

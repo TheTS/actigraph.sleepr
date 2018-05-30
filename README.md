@@ -38,6 +38,15 @@ install_github("TheTS/actigraphr")
 
 `actigraphr` supports reading AGD files and raw gt3x files that are exported from the Actilife software.
 
+``` r
+library(actigraphr)
+
+agd_file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
+                        package = "actigraphr")
+
+agdb <- read_agd(agd_file)
+```
+
 When an AGD file is read, the information about the device settings are saved as attributes:
 
 ``` r
@@ -88,7 +97,7 @@ str(agdb)
 #>  - attr(*, "unexpectedResets")= chr "0"
 ```
 
-This file can then be processed using the dplyr pipe syntax. This snippet collapses the data to 30 second epochs, before adding weartime and physicay activity intensity columns:
+This file can then be processed using the dplyr pipe syntax. This snippet collapses the data to 30 second epochs, before adding weartime and physical activity intensity columns:
 
 ``` r
 scored <- agdb %>% 
@@ -98,14 +107,13 @@ scored <- agdb %>%
 ```
 
 ``` r
-#> # A tibble: 5 x 11
-#>   timestamp           axis1 axis2 axis3 steps inclineoff inclinestanding inclinesitting inclinelying  wear activity
-#>   <dttm>              <int> <int> <int> <int>      <int>           <int>          <int>        <int> <int>    <int>
-#> 1 2012-06-27 10:54:00  1465  1791  2572    13          0              40             20            0     1        2
-#> 2 2012-06-27 10:55:00   207   218   270     1          0              10             50            0     1        2
-#> 3 2012-06-27 10:56:00   169   257   270     3          0              11             49            0     1        2
-#> 4 2012-06-27 10:57:00     0     0     0     0          0               0             60            0     1        1
-#> 5 2012-06-27 10:58:00   157   174   248     1          0              10             50            0     1        2
+head(scored, 5)
+#>             timestamp axis1 axis2 axis3 steps inclineoff inclinestanding inclinesitting inclinelying wear activity
+#> 1 2012-06-27 10:54:00  1465  1791  2572    13          0              40             20            0    1        2
+#> 2 2012-06-27 10:55:00   207   218   270     1          0              10             50            0    1        2
+#> 3 2012-06-27 10:56:00   169   257   270     3          0              11             49            0    1        2
+#> 4 2012-06-27 10:57:00     0     0     0     0          0               0             60            0    1        1
+#> 5 2012-06-27 10:58:00   157   174   248     1          0              10             50            0    1        2
 ```
 
 Summarising this data over a specified time interval (e.g. daily, hourly) is as simple as:
@@ -121,9 +129,9 @@ And this summary information can then be plotted:
 plot_activity_summary(summary)
 ```
 
-![](README-unnamed-chunk-8-1.png)
+![](README-unnamed-chunk-9-1.png)
 
-*More documentation and vignettes to come!*
+**More documentation and vignettes to come!**
 
 ### References
 
