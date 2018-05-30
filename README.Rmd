@@ -76,7 +76,7 @@ This file can then be processed using the dplyr pipe syntax. This snippet collap
 
 ```{r}
 scored <- agdb %>% 
-  collapse_epochs(60) %>% 
+  collapse_epochs(30) %>% 
   apply_weartime(fun = apply_troiano) %>% 
   apply_cutpoints(cutpoints = "evenson_children") 
 ```
@@ -87,8 +87,6 @@ head(scored, 5)
 ```{r echo=FALSE}
 head(as.data.frame(scored), 5)
 ```
-
-
 
 Summarising this data over a specified time interval (e.g. daily, hourly) is as simple as:
 

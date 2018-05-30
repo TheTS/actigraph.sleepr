@@ -101,7 +101,7 @@ This file can then be processed using the dplyr pipe syntax. This snippet collap
 
 ``` r
 scored <- agdb %>% 
-  collapse_epochs(60) %>% 
+  collapse_epochs(30) %>% 
   apply_weartime(fun = apply_troiano) %>% 
   apply_cutpoints(cutpoints = "evenson_children") 
 ```
@@ -109,11 +109,11 @@ scored <- agdb %>%
 ``` r
 head(scored, 5)
 #>             timestamp axis1 axis2 axis3 steps inclineoff inclinestanding inclinesitting inclinelying wear activity
-#> 1 2012-06-27 10:54:00  1465  1791  2572    13          0              40             20            0    1        2
-#> 2 2012-06-27 10:55:00   207   218   270     1          0              10             50            0    1        2
-#> 3 2012-06-27 10:56:00   169   257   270     3          0              11             49            0    1        2
-#> 4 2012-06-27 10:57:00     0     0     0     0          0               0             60            0    1        1
-#> 5 2012-06-27 10:58:00   157   174   248     1          0              10             50            0    1        2
+#> 1 2012-06-27 10:54:00  1347  1657  2351    12          0              30              0            0    1        3
+#> 2 2012-06-27 10:54:30   118   134   221     1          0              10             20            0    1        2
+#> 3 2012-06-27 10:55:00   207   218   270     1          0              10             20            0    1        2
+#> 4 2012-06-27 10:55:30     0     0     0     0          0               0             30            0    1        1
+#> 5 2012-06-27 10:56:00   169   257   270     3          0              11             19            0    1        2
 ```
 
 Summarising this data over a specified time interval (e.g. daily, hourly) is as simple as:
