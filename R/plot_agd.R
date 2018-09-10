@@ -101,7 +101,8 @@ plot_activity_period <- function(agdb, periods, act_var,
 plot_activity_summary <- function(agdb_summary,
                                   start_date = NULL,
                                   end_date = NULL,
-                                  colours = NULL) {
+                                  colours = NULL,
+                                  title = NULL) {
 
   cols <- c("non_wear", rev(tolower(attr(agdb_summary, "intensity_categories"))))
 
@@ -124,11 +125,13 @@ plot_activity_summary <- function(agdb_summary,
     colours <- c("cornsilk2", "firebrick2", "orange", "lightgoldenrod2",
                  "royalblue1", 'lightblue', "skyblue", 2:length(cols))
 
+  if (is.null(title))
+    title <- paste('Name:', attr(agdb_summary, "subjectname"))
+
   ggplot(data, aes_string(x = "time", y = "minutes", fill = "activity")) +
     geom_col() +
     facet_grid(date ~ ., switch = "both") +
-    labs(title = paste("Name: ", attr(agdb_summary, "subjectname")),
-         x = "", y = "", fill = "") +
+    labs(title = title, x = "", y = "", fill = "") +
     theme(axis.text.x = element_text(angle = 90),
       axis.text.y = element_blank(),
       axis.ticks.y = element_blank(),

@@ -97,8 +97,12 @@ apply_troiano_seq_ <- function(data,
                                spike_tolerance,
                                spike_stoplevel,
                                use_magnitude) {
+
+  if (use_magnitude) {
+    data %>% add_magnitude()
+  }
+
   data %>%
-    add_magnitude() %>%
     mutate(count = if (use_magnitude) magnitude else axis1,
            wear = if_else(count <= activity_threshold |
                           count > max_nonzero_count, 0L, 1L),

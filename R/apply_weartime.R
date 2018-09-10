@@ -22,10 +22,15 @@ apply_weartime <- function(agdb, fun = apply_troiano, ...){
   non_wear <- agdb %>%
     fun(...)
 
-  agdb %>%
-    combine_epochs_periods(non_wear, non_wear$period_start, non_wear$period_end) %>%
-    mutate(wear = ifelse(is.na(period_id), 1L, 0L)) %>%
-    select(-period_id)
+  if (nrow(non_wear) == 0) {
+    agdb %>%
+      mutate(wear = 1)
+  } else {
+    agdb %>%
+      combine_epochs_periods(non_wear, non_wear$period_start, non_wear$period_end) %>%
+      mutate(wear = ifelse(is.na(period_id), 1L, 0L)) %>%
+      select(-period_id)
+  }
 }
 
 #' Apply a weartime filter to an activity data frame
