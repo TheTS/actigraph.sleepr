@@ -5,7 +5,7 @@
 \title{Plot activity summaries}
 \usage{
 plot_activity_summary(agdb_summary, start_date = NULL, end_date = NULL,
-  colours = NULL)
+  colours = NULL, title = NULL)
 }
 \arguments{
 \item{agdb_summary}{A \code{tibble} (\code{tbl}) of activity data obtained from  \code{\link{summarise_agd}}.}
@@ -15,6 +15,8 @@ plot_activity_summary(agdb_summary, start_date = NULL, end_date = NULL,
 \item{end_date}{The last day of data to plot. efault is \code{NULL} (plots all data).}
 
 \item{colours}{Colours are chosen by default, but a vector of custom colours can be passed in. The vector length should be equal to cutpoint categories + 1 (for non-wear time).}
+
+\item{title}{A string used for the title of the plot. Defaults to the 'subjectname' attribute.}
 }
 \description{
 Plot a grouped timeseries of activity values. The plot is organised (faceted) by date and coloured based on cutpoint categories.

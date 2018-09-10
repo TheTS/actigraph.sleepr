@@ -18,26 +18,12 @@ check_no_missing_counts <- function(agdb, var) {
 }
 
 check_no_missing_state <- function(agdb) {
-<<<<<<< HEAD
-  if (!exists("sleep", agdb))
-    stop("Missing asleep/awake (0/1) indicator column. ",
-         "These states can be inferred with `apply_sadeh` ",
-         "or `apply_cole_kripke.`")
-
-  if (anyNA(agdb$sleep)) stop("Missing asleep/awake values.")
-}
-
-check_has_variable <- function(agdb, var) {
-  if (!exists(var, where = agdb))
-    stop("tbl_agd does not have variable ", var)
-=======
   assert_that(has_name(agdb, "sleep"),
               msg = paste0("Missing asleep/awake (S/W) indicator column. ",
                            "State can be inferred with `apply_sadeh` ",
                            "or `apply_cole_kripke.`"))
   assert_that(noNA(agdb[["sleep"]]),
               msg = "Missing asleep/awake values.")
->>>>>>> upstream/master
 }
 
 check_args_sleep_scores <- function(agdb, algorithm) {
@@ -53,8 +39,8 @@ check_args_sleep_periods <- function(agdb, algorithm) {
 }
 
 check_args_nonwear_periods <- function(agdb, algorithm, use_magnitude) {
-  if (attr(agdb, "epochlength") > 60)
-    stop("Nonwear algorithms are not compatible with epochlength > 60s.")
+  assert_that(attr(agdb, "epochlength") <= 60,
+              msg = "Nonwear algorithms are not compatible with epochlength > 60s.")
 
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, "axis1")
@@ -64,24 +50,18 @@ check_args_nonwear_periods <- function(agdb, algorithm, use_magnitude) {
     check_no_missing_counts(agdb, "axis3")
   }
 }
-<<<<<<< HEAD
 
-check_args_collapse_method <- function(agdb, epoch_len_out) {
-  if (epoch_len_out %% attr(agdb, "epochlength"))
-    stop("Output epoch length is not an exact multiple of input epoch length.")
-
-=======
 check_args_filter <- function(agdb, var) {
   assert_that(has_name(agdb, var))
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, var)
 }
+
 check_args_collapse_method <- function(agdb, epoch_len_out) {
->>>>>>> upstream/master
   check_no_missing_timestamps(agdb)
   check_no_missing_counts(agdb, "axis1")
-  assert_that(epoch_len_out == 60,
-              msg = "Use `collapse_epochs` to aggregate to 60s epochs.")
+  #assert_that(epoch_len_out == 60,
+  #            msg = "Use `collapse_epochs` to aggregate to 60s epochs.")
   assert_that(exact_division(epoch_len_out, attr(agdb, "epochlen")),
               msg = paste0("Output epoch length is not an exact multiple ",
                            "of input epoch length."))
@@ -93,8 +73,8 @@ exact_division <- function(a, b) {
 
 check_args_cutpoints <- function(agdb, cutpoints, use_magnitude,
                                  custom_cutpoints, cutpoints_list) {
-  if (!tolower(cutpoints) %in% cutpoints_list)
-    stop("`cutpoints` must be one of: ", paste(cutpoints_list, collapse = ", "))
+  assert_that(tolower(cutpoints) %in% cutpoints_list,
+    msg = cat("`cutpoints` must be one of: ", paste(cutpoints_list, collapse = ", ")))
 
   if (tolower(cutpoints) == "custom") {
     if (length(custom_cutpoints) != 2)
@@ -106,13 +86,13 @@ check_args_cutpoints <- function(agdb, cutpoints, use_magnitude,
            "of categories")
   }
 
-  check_has_variable(agdb, "axis1")
+  assert_that(has_name(agdb, "axis1"))
   if (use_magnitude) {
-    check_has_variable(agdb, "axis2")
-    check_has_variable(agdb, "axis3")
+    assert_that(has_name(agdb, "axis2"))
+    assert_that(has_name(agdb, "axis3"))
   }
 }
 
 check_args_summary <- function(agdb, vars) {
-  for (var in vars) check_has_variable(agdb, var)
+  for (var in vars) assert_that(has_name(agdb, var))
 }

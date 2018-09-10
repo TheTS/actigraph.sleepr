@@ -70,23 +70,6 @@ test_that("collapse_epochs errors if unexpected epoch length", {
   expect_error(collapse_epochs(dummy_agdb, 60))
 })
 
-<<<<<<< HEAD
-context("Impute missing epochs")
-test_that("impute missing epochs", {
-  file <- system.file("extdata", "GT3XPlus-RawData-Day01.agd",
-                      package = "actigraphr")
-  agdb <- read_agd(file)
-
-  agdb$axis1[3:7] <- NA
-
-  expect_equal(is.na(sum(agdb$axis1)), TRUE)
-
-  agdb <- agdb %>%
-    impute_epochs(axis1)
-
-  expect_equal(is.na(sum(agdb$axis1)), FALSE)
-})
-
 context("Test tbl_agd dplyr features")
 test_that("Test tbl_agd dplyr verbs", {
 
@@ -113,10 +96,9 @@ test_that("Test tbl_period dplyr joins", {
 
 })
 
-=======
 context("Impute epochs")
 test_that("impute_epochs fills in NA epoch counts", {
-  data("gtxplus1day", package = "actigraph.sleepr")
+  data("gtxplus1day", package = "actigraphr")
 
   gtxplus1day <- gtxplus1day %>%
     mutate_if(is.numeric, function(x) {
@@ -131,7 +113,7 @@ test_that("impute_epochs fills in NA epoch counts", {
 
 context("Combine epochs and periods")
 test_that("combine_epochs_periods adds period id column", {
-  data("gtxplus1day", package = "actigraph.sleepr")
+  data("gtxplus1day", package = "actigraphr")
 
   agdb <- gtxplus1day %>% collapse_epochs(60) %>% apply_sadeh()
   periods <- agdb %>% apply_tudor_locke(min_sleep_period = 60)
@@ -143,6 +125,5 @@ test_that("combine_epochs_periods adds period id column", {
 
   x <- agdb_with_periods %>% drop_na() %>% count(period_id) %>% .$n
   y <- periods %>% .$duration
-  expect_identical(x, y + 1L)
+  expect_identical(x, y)
 })
->>>>>>> upstream/master

@@ -23,27 +23,10 @@ dplyr_attributes <- function() {
     "group_sizes", "biggest_group_size")
 }
 
-<<<<<<< HEAD
-wrap_dplyr_verb <- function(x, f, ...) {
-  y <- x
-  cls1 <- class(y)[1]
-  class(y) <- class(y)[-1]
-  y <- f(y, ...)
-  for (a in setdiff(names(attributes(x)), special_dplyr_attributes())) {
-    attr(y, a) <- attr(x, a)
-=======
-add_magnitude <- function(data) {
-  data %>%
-    mutate(magnitude = sqrt(.data$axis1 ^ 2 +
-                              .data$axis2 ^ 2 +
-                              .data$axis3 ^ 2))
-}
-
 reclass <- function(z, x, cls) {
   for (a in setdiff(names(attributes(x)),
                     dplyr_attributes())) {
     attr(z, a) <- attr(x, a)
->>>>>>> upstream/master
   }
   class(z) <- c(cls, class(z))
   z

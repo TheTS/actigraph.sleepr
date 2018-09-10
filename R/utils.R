@@ -44,17 +44,11 @@ complement_periods <- function(periods, epochs, start_var, end_var) {
 #' end <- as.POSIXct("2017-01-01 01:00:00")
 #' expand_timestamp(start, end, "15 mins")
 #' @export
-<<<<<<< HEAD
 expand_timestamp <- function(start, end, units) {
-  stopifnot(is.POSIXct(start), is.POSIXct(end))
-  time <- seq(start, end, by = units)
-  time[-length(time)]
-=======
-expand_timestamp <- function(start, end, units = "1 min") {
   assert_that(is.POSIXct(start),
               is.POSIXct(end))
-  seq(start, end, by = units)
->>>>>>> upstream/master
+  time <- seq(start, end, by = units)
+  time[-length(time)]
 }
 
 #' Expand time periods into a data frame of equally spaced time points

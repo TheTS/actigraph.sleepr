@@ -81,6 +81,7 @@ plot_activity_period <- function(agdb, periods, act_var,
 #' @param start_date The first day of data to plot. Default is \code{NULL} (plots all data).
 #' @param end_date The last day of data to plot. efault is \code{NULL} (plots all data).
 #' @param colours Colours are chosen by default, but a vector of custom colours can be passed in. The vector length should be equal to cutpoint categories + 1 (for non-wear time).
+#' @param title A string used for the title of the plot. Defaults to the 'subjectname' attribute.
 #' @examples
 #' data("gtxplus1day")
 #'
