@@ -21,12 +21,6 @@ special_dplyr_attributes <- function() {
     "group_sizes", "biggest_group_size")
 }
 
-add_magnitude <- function(data) {
-  data %>%
-    mutate(magnitude = sqrt(.data$axis1 ^ 2 + .data$axis2 ^ 2 +
-                              .data$axis3 ^ 2))
-}
-
 wrap_dplyr_verb <- function(x, f, ...) {
   y <- x
   cls1 <- class(y)[1]

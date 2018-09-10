@@ -91,3 +91,9 @@ get_epoch_length <- function(epochs) {
 
   if (n_distinct(epoch_len) != 1) NULL else first(epoch_len)
 }
+
+add_magnitude <- function(data) {
+  data %>%
+    mutate(magnitude = sqrt(.data$axis1 ^ 2 + .data$axis2 ^ 2 +
+                              .data$axis3 ^ 2))
+}
