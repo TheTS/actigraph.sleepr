@@ -28,7 +28,7 @@ apply_choi <- function(agdb,
                        use_magnitude = FALSE) {
 
   check_args_nonwear_periods(agdb, "Choi", use_magnitude)
-  stopifnot(min_window_len >= spike_tolerance)
+  assert_that(min_window_len >= spike_tolerance)
 
   # Collapse to 60 sec epoch if smaller
   # Choi is only designed for 60, and Actilife also collapses

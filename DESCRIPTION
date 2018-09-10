@@ -16,11 +16,19 @@ License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
+<<<<<<< HEAD
 RoxygenNote: 6.1.0
 Depends:
   R (>= 3.2.4),
   dplyr (>= 0.7.4),
   tidyr (>= 0.7.1)
+=======
+RoxygenNote: 6.0.1
+Depends:
+  R (>= 3.2.4),
+  dplyr (>= 0.7.4),
+  tidyr (>= 0.8.0.9000)
+>>>>>>> upstream/master
 Imports:
   DBI,
   Rcpp,
@@ -31,15 +39,18 @@ Imports:
   dbplyr,
   ggplot2,
   lubridate,
+  purrr,
   rlang,
   stringr,
-  purrr,
   zoo
-Suggests:
+Suggests: 
+  covr,
   knitr,
   readr,
   rmarkdown,
   testthat,
   tools
+Remotes: 
+  tidyverse/tidyr
 VignetteBuilder: knitr
 LinkingTo: Rcpp

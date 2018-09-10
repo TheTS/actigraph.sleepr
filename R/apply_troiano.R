@@ -54,21 +54,31 @@ apply_troiano <- function(agdb,
 
   if (endat_nnz_seq)
     nonwear <- agdb %>%
+<<<<<<< HEAD
       do(apply_troiano_seq_(.,
                             epoch_len,
                             activity_threshold,
                             min_period_len,
                             max_nonzero_count,
+=======
+      do(apply_troiano_seq_(., activity_threshold,
+                            min_period_len, max_nonzero_count,
+>>>>>>> upstream/master
                             spike_tolerance,
                             spike_stoplevel,
                             use_magnitude))
   else
     nonwear <- agdb %>%
+<<<<<<< HEAD
       do(apply_troiano_nonseq_(.,
                                epoch_len,
                                activity_threshold,
                                min_period_len,
                                max_nonzero_count,
+=======
+      do(apply_troiano_nonseq_(., activity_threshold,
+                               min_period_len, max_nonzero_count,
+>>>>>>> upstream/master
                                spike_tolerance,
                                spike_stoplevel,
                                use_magnitude))
